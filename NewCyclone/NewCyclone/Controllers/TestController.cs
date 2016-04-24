@@ -31,5 +31,25 @@ namespace NewCyclone.Controllers
             }
             return "";
         }
+
+        [HttpGet]
+        public List<SysLog> testDb() {
+            SysContext db = new SysContext();
+            var r = (from x in db.sysLogs
+                                   select new 
+                                   {
+                                       id = x.id,
+                                       message = x.message
+                                   }).ToList();
+            List<SysLog> result = new List<SysLog>();
+            foreach (var s in r) {
+                result.Add(new SysLog()
+                {
+                    id = s.id,
+                    message = s.message
+                });
+            }
+            return result;
+        }
     }
 }
