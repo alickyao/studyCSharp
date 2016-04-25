@@ -17,7 +17,6 @@ namespace NewCyclone.DataBase
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Db_SysUser()
         {
-            this.Db_SysRole = new HashSet<Db_SysRole>();
             this.SysUserLog = new HashSet<Db_SysUserLog>();
         }
     
@@ -28,8 +27,6 @@ namespace NewCyclone.DataBase
         public Nullable<System.DateTime> lastLoginTime { get; set; }
         public string passWord { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_SysRole> Db_SysRole { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Db_SysUserLog> SysUserLog { get; set; }
     }

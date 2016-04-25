@@ -500,13 +500,7 @@
     <Compile Include="DataBase\Db_SysExceptionLog.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="DataBase\Db_SysMenu.cs">
-      <DependentUpon>SysModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="DataBase\Db_SysMsg.cs">
-      <DependentUpon>SysModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DataBase\Db_SysRole.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_SysTree.cs">
@@ -538,8 +532,6 @@
     </Compile>
     <Compile Include="Models\SysBase.cs" />
     <Compile Include="Models\SysException.cs" />
-    <Compile Include="Models\SysManagerUser.cs" />
-    <Compile Include="Models\SysRole.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

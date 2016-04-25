@@ -25,7 +25,6 @@ namespace NewCyclone.DataBase
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Db_SysRole> Db_SysRoleSet { get; set; }
         public virtual DbSet<Db_SysUser> Db_SysUserSet { get; set; }
         public virtual DbSet<Db_SysMsg> Db_SysMsgSet { get; set; }
         public virtual DbSet<Db_SysTree> Db_SysTreeSet { get; set; }

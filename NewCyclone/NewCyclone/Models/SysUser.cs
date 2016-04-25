@@ -3,23 +3,47 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
+using NewCyclone.DataBase;
 
 namespace NewCyclone.Models
 {
+    /// <summary>
+    /// 角色
+    /// </summary>
+    public class Roles {
+        /// <summary>
+        /// 系统全部角色
+        /// </summary>
+        public string[] RolesList = { "admin", "user", "member", "guest" };
+    }
+
     /// <summary>
     /// 基类用户
     /// </summary>
     public abstract class SysUser
     {
         /// <summary>
-        /// 用户的ID
+        /// 登录名（ID）
         /// </summary>
-        public string id { get; set; }
+        public string loginName { get; set; }
 
         /// <summary>
         /// 角色
         /// </summary>
-        public SysRole[] role { get; set; }
+        public string[] role { get; set; }
+
+
+        /// <summary>
+        /// 注册时间
+        /// </summary>
+        public DateTime createdOn { get; set; }
+
+
+        /// <summary>
+        /// 是否已经禁用
+        /// </summary>
+        public bool isDisabled { get; set; }
+
 
         /// <summary>
         /// 删除用户
@@ -37,5 +61,45 @@ namespace NewCyclone.Models
         /// 保存用户信息
         /// </summary>
         public abstract void saveInfo();
+    }
+
+    /// <summary>
+    /// 系统管后台用户
+    /// </summary>
+    public class SysManagerUser : SysUser
+    {
+        /// <summary>
+        /// 姓名
+        /// </summary>
+        public string fullName;
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        public string mobilePhone;
+        /// <summary>
+        /// 职位
+        /// </summary>
+        public string jobTitle;
+        
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        public override void getInfo()
+        {
+            using (var db = new SysModelContainer())
+            {
+
+            }
+            throw new SysException("自定义的系统错误", SysExceptionType.系统未能找到匹配的信息);
+        }
+
+        /// <summary>
+        /// 保存用户信息
+        /// </summary>
+        public override void saveInfo()
+        {
+            string s = "hello";
+            int i = int.Parse(s);
+        }
     }
 }
