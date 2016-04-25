@@ -34,7 +34,6 @@ namespace NewCyclone.Controllers
                 ex.saveException(SysMessageType.异常);
                 return ex.ToString();
             }
-            return "ok";
         }
     }
 }
