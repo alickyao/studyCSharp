@@ -10,8 +10,17 @@ namespace NewCyclone.Models
     /// </summary>
     public enum SysMessageType
     {
+        /// <summary>
+        /// 来自远程服务器的通知
+        /// </summary>
         通知,
-        警告,
-        错误
+        /// <summary>
+        /// 用户日志
+        /// </summary>
+        日志,
+        /// <summary>
+        /// 异常信息
+        /// </summary>
+        异常
     }
 }

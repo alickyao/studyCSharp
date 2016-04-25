@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using NewCyclone.DataBase;
+using Newtonsoft.Json;
 
 namespace NewCyclone.Models
 {
@@ -48,14 +50,28 @@ namespace NewCyclone.Models
         /// <param name="condtion">导致错误的请求参数</param>
         public SysException(string message, SysExceptionType code, object condtion = null) : base()
         {
+
+            
+
             this.message = message;
             this.code = code;
+            if (condtion != null) {
+                this.condtion = JsonConvert.SerializeObject(condtion);
+            }
         }
 
-        public SysException(Exception e, object condtion = null) : base()
+        public SysException(Exception e, object condtion = null) : base(e.Message, e)
         {
+            this.source = e.Source;
+            this.targetSite = e.TargetSite.ToString();
+            this.stackTrace = e.StackTrace;
+
             this.message = e.Message;
             this.code = SysExceptionType.发生其他系统异常;
+            if (condtion != null)
+            {
+                this.condtion = JsonConvert.SerializeObject(condtion);
+            }
         }
 
         /// <summary>
@@ -63,10 +79,28 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="type"></param>
         public void saveException(SysMessageType type) {
-            this.source = this.Source;
-            this.targetSite = this.TargetSite.ToString();
-            this.stackTrace = this.StackTrace;
 
+            if (!(this.code == SysExceptionType.发生其他系统异常)) {
+                this.source = base.Source;
+                this.targetSite = base.TargetSite.ToString();
+                this.stackTrace = base.StackTrace;
+            }
+
+            using (var db = new SysModelContainer()) {
+                Db_SysExceptionLog log = new Db_SysExceptionLog()
+                {
+                    condtion = this.condtion,
+                    createdOn = DateTime.Now,
+                    errorCode = this.code.GetHashCode(),
+                    message = this.message,
+                    msgType = type.GetHashCode(),
+                    source = this.source,
+                    stackTrace = this.stackTrace,
+                    targetSite = this.targetSite
+                };
+                db.Db_SysMsgSet.Add(log);
+                db.SaveChanges();
+            }
         }
 
         /// <summary>

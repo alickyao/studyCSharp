@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SysModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="SysModelStoreContainer">
+    <EntitySet Name="Db_SysRoleSet" EntityType="SysModel.Store.Db_SysRoleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserSet" EntityType="SysModel.Store.Db_SysUserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet" EntityType="SysModel.Store.Db_SysMsgSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Store.Db_SysTreeSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet_Db_SysUserLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysTreeSet_Db_SysMenu" EntityType="SysModel.Store.Db_SysTreeSet_Db_SysMenu" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="SysModel.Store.Db_SysUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserSet_Db_MemberUser" EntityType="SysModel.Store.Db_SysUserSet_Db_MemberUser" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysMsgSet_Db_SysExceptionLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysExceptionLog" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysUserDb_SysRole" EntityType="SysModel.Store.Db_SysUserDb_SysRole" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysRoleDb_SysMenu" EntityType="SysModel.Store.Db_SysRoleDb_SysMenu" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Db_SysUserDb_SysRole_Db_SysUser" Association="SysModel.Store.FK_Db_SysUserDb_SysRole_Db_SysUser">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="Db_SysUserDb_SysRole" EntitySet="Db_SysUserDb_SysRole" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysUserDb_SysRole_Db_SysRole" Association="SysModel.Store.FK_Db_SysUserDb_SysRole_Db_SysRole">
+      <End Role="Db_SysRole" EntitySet="Db_SysRoleSet" />
+      <End Role="Db_SysUserDb_SysRole" EntitySet="Db_SysUserDb_SysRole" />
+    </AssociationSet>
+    <AssociationSet Name="Db_SysUserSysUserLog" Association="SysModel.Store.Db_SysUserSysUserLog">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="SysUserLog" EntitySet="Db_SysMsgSet_Db_SysUserLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysRoleDb_SysMenu_Db_SysRole" Association="SysModel.Store.FK_Db_SysRoleDb_SysMenu_Db_SysRole">
+      <End Role="Db_SysRole" EntitySet="Db_SysRoleSet" />
+      <End Role="Db_SysRoleDb_SysMenu" EntitySet="Db_SysRoleDb_SysMenu" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysRoleDb_SysMenu_Db_SysMenu" Association="SysModel.Store.FK_Db_SysRoleDb_SysMenu_Db_SysMenu">
+      <End Role="Db_SysMenu" EntitySet="Db_SysTreeSet_Db_SysMenu" />
+      <End Role="Db_SysRoleDb_SysMenu" EntitySet="Db_SysRoleDb_SysMenu" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysUserLog_inherits_Db_SysMsg" Association="SysModel.Store.FK_Db_SysUserLog_inherits_Db_SysMsg">
+      <End Role="Db_SysMsg" EntitySet="Db_SysMsgSet" />
+      <End Role="Db_SysUserLog" EntitySet="Db_SysMsgSet_Db_SysUserLog" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysMenu_inherits_Db_SysTree" Association="SysModel.Store.FK_Db_SysMenu_inherits_Db_SysTree">
+      <End Role="Db_SysTree" EntitySet="Db_SysTreeSet" />
+      <End Role="Db_SysMenu" EntitySet="Db_SysTreeSet_Db_SysMenu" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_SysUser" Association="SysModel.Store.FK_Db_ManagerUser_inherits_Db_SysUser">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="Db_ManagerUser" EntitySet="Db_SysUserSet_Db_ManagerUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_MemberUser_inherits_Db_SysUser" Association="SysModel.Store.FK_Db_MemberUser_inherits_Db_SysUser">
+      <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+      <End Role="Db_MemberUser" EntitySet="Db_SysUserSet_Db_MemberUser" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg" Association="SysModel.Store.FK_Db_SysExceptionLog_inherits_Db_SysMsg">
+      <End Role="Db_SysMsg" EntitySet="Db_SysMsgSet" />
+      <End Role="Db_SysExceptionLog" EntitySet="Db_SysMsgSet_Db_SysExceptionLog" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Db_SysRoleSet">
+    <Key>
+      <PropertyRef Name="roleName" />
+    </Key>
+    <Property Name="roleName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="describe" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Db_SysUserSet">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="isDeleted" Type="bit" Nullable="false" />
+    <Property Name="isDisabled" Type="bit" Nullable="false" />
+    <Property Name="lastLoginTime" Type="datetime" Nullable="true" />
+    <Property Name="passWord" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="createdOn" Type="datetime" Nullable="false" />
+    <Property Name="msgType" Type="int" Nullable="false" />
+    <Property Name="message" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysTreeSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="parentId" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet_Db_SysUserLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Db_SysUser_loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="logType" Type="int" Nullable="false" />
+    <Property Name="fkId" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysTreeSet_Db_SysMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="url" Type="nvarchar" Nullable="true" MaxLength="100" />
+    <Property Name="icon" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysUserSet_Db_ManagerUser">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="fullName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="mobilePhone" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="jobTitle" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysUserSet_Db_MemberUser">
+    <Key>
+      <PropertyRef Name="loginName" />
+    </Key>
+    <Property Name="nickName" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysMsgSet_Db_SysExceptionLog">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="errorCode" Type="int" Nullable="false" />
+    <Property Name="condtion" Type="varchar(max)" Nullable="true" />
+    <Property Name="source" Type="varchar(max)" Nullable="false" />
+    <Property Name="stackTrace" Type="varchar(max)" Nullable="false" />
+    <Property Name="targetSite" Type="varchar(max)" Nullable="false" />
+    <Property Name="Id" Type="bigint" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Db_SysUserDb_SysRole">
+    <Key>
+      <PropertyRef Name="Db_SysUser_loginName" />
+      <PropertyRef Name="Db_SysRole_roleName" />
+    </Key>
+    <Property Name="Db_SysUser_loginName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_SysRole_roleName" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysRoleDb_SysMenu">
+    <Key>
+      <PropertyRef Name="Db_SysRole_roleName" />
+      <PropertyRef Name="Db_SysMenu_Id" />
+    </Key>
+    <Property Name="Db_SysRole_roleName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Db_SysMenu_Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <Association Name="Db_SysUserSysUserLog">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1" />
+    <End Role="SysUserLog" Type="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="SysUserLog">
+        <PropertyRef Name="Db_SysUser_loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysUserDb_SysRole_Db_SysUser">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1" />
+    <End Role="Db_SysUserDb_SysRole" Type="SysModel.Store.Db_SysUserDb_SysRole" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="Db_SysUserDb_SysRole">
+        <PropertyRef Name="Db_SysUser_loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysUserDb_SysRole_Db_SysRole">
+    <End Role="Db_SysUserDb_SysRole" Type="SysModel.Store.Db_SysUserDb_SysRole" Multiplicity="*" />
+    <End Role="Db_SysRole" Type="SysModel.Store.Db_SysRoleSet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysRole">
+        <PropertyRef Name="roleName" />
+      </Principal>
+      <Dependent Role="Db_SysUserDb_SysRole">
+        <PropertyRef Name="Db_SysRole_roleName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysRoleDb_SysMenu_Db_SysRole">
+    <End Role="Db_SysRole" Type="SysModel.Store.Db_SysRoleSet" Multiplicity="1" />
+    <End Role="Db_SysRoleDb_SysMenu" Type="SysModel.Store.Db_SysRoleDb_SysMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysRole">
+        <PropertyRef Name="roleName" />
+      </Principal>
+      <Dependent Role="Db_SysRoleDb_SysMenu">
+        <PropertyRef Name="Db_SysRole_roleName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysRoleDb_SysMenu_Db_SysMenu">
+    <End Role="Db_SysRoleDb_SysMenu" Type="SysModel.Store.Db_SysRoleDb_SysMenu" Multiplicity="*" />
+    <End Role="Db_SysMenu" Type="SysModel.Store.Db_SysTreeSet_Db_SysMenu" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysMenu">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysRoleDb_SysMenu">
+        <PropertyRef Name="Db_SysMenu_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysUserLog_inherits_Db_SysMsg">
+    <End Role="Db_SysMsg" Type="SysModel.Store.Db_SysMsgSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_SysUserLog" Type="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysMsg">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysUserLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysMenu_inherits_Db_SysTree">
+    <End Role="Db_SysTree" Type="SysModel.Store.Db_SysTreeSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_SysMenu" Type="SysModel.Store.Db_SysTreeSet_Db_SysMenu" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysTree">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysMenu">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_ManagerUser_inherits_Db_SysUser">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_ManagerUser" Type="SysModel.Store.Db_SysUserSet_Db_ManagerUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="Db_ManagerUser">
+        <PropertyRef Name="loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_MemberUser_inherits_Db_SysUser">
+    <End Role="Db_SysUser" Type="SysModel.Store.Db_SysUserSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_MemberUser" Type="SysModel.Store.Db_SysUserSet_Db_MemberUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysUser">
+        <PropertyRef Name="loginName" />
+      </Principal>
+      <Dependent Role="Db_MemberUser">
+        <PropertyRef Name="loginName" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_SysExceptionLog_inherits_Db_SysMsg">
+    <End Role="Db_SysMsg" Type="SysModel.Store.Db_SysMsgSet" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_SysExceptionLog" Type="SysModel.Store.Db_SysMsgSet_Db_SysExceptionLog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_SysMsg">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_SysExceptionLog">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="SysModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="SysModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Db_SysRoleSet" EntityType="SysModel.Db_SysRole" />
+          <EntitySet Name="Db_SysUserSet" EntityType="SysModel.Db_SysUser" />
+          <AssociationSet Name="Db_SysUserDb_SysRole" Association="SysModel.Db_SysUserDb_SysRole">
+            <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+            <End Role="Db_SysRole" EntitySet="Db_SysRoleSet" />
+          </AssociationSet>
+          <EntitySet Name="Db_SysMsgSet" EntityType="SysModel.Db_SysMsg" />
+          <AssociationSet Name="Db_SysUserSysUserLog" Association="SysModel.Db_SysUserSysUserLog">
+            <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
+            <End Role="SysUserLog" EntitySet="Db_SysMsgSet" />
+          </AssociationSet>
+          <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Db_SysTree" />
+          <AssociationSet Name="Db_SysRoleDb_SysMenu" Association="SysModel.Db_SysRoleDb_SysMenu">
+            <End Role="Db_SysRole" EntitySet="Db_SysRoleSet" />
+            <End Role="Db_SysMenu" EntitySet="Db_SysTreeSet" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Db_SysRole">
+          <Key>
+            <PropertyRef Name="roleName" />
+          </Key>
+          <Property Name="roleName" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="describe" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Db_SysUser" Relationship="SysModel.Db_SysUserDb_SysRole" FromRole="Db_SysRole" ToRole="Db_SysUser" />
+          <NavigationProperty Name="Db_SysMenu" Relationship="SysModel.Db_SysRoleDb_SysMenu" FromRole="Db_SysRole" ToRole="Db_SysMenu" />
+        </EntityType>
+        <EntityType Name="Db_SysUser" Abstract="true">
+          <Key>
+            <PropertyRef Name="loginName" />
+          </Key>
+          <Property Name="loginName" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Db_SysRole" Relationship="SysModel.Db_SysUserDb_SysRole" FromRole="Db_SysUser" ToRole="Db_SysRole" />
+          <Property Name="isDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="isDisabled" Type="Boolean" Nullable="false" />
+          <Property Name="lastLoginTime" Type="DateTime" Nullable="true" Precision="3" />
+          <NavigationProperty Name="SysUserLog" Relationship="SysModel.Db_SysUserSysUserLog" FromRole="Db_SysUser" ToRole="SysUserLog" />
+          <Property Name="passWord" Type="String" Nullable="false" MaxLength="50" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Db_ManagerUser" BaseType="SysModel.Db_SysUser" >
+          <Property Name="fullName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="mobilePhone" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="jobTitle" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Db_MemberUser" BaseType="SysModel.Db_SysUser" >
+          <Property Name="nickName" Type="String" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <Association Name="Db_SysUserDb_SysRole">
+          <End Type="SysModel.Db_SysUser" Role="Db_SysUser" Multiplicity="*" />
+          <End Type="SysModel.Db_SysRole" Role="Db_SysRole" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Db_SysMsg" Abstract="false">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="msgType" Type="Int32" Nullable="false" >
+          </Property>
+          <Property Name="message" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Db_SysExceptionLog" BaseType="SysModel.Db_SysMsg" >
+          <Property Name="errorCode" Type="Int32" Nullable="false" />
+          <Property Name="condtion" Type="String" Unicode="false" FixedLength="false" MaxLength="Max" />
+          <Property Name="source" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="stackTrace" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
+          <Property Name="targetSite" Type="String" Nullable="false" MaxLength="Max" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Db_SysUserLog" BaseType="SysModel.Db_SysMsg" >
+          <NavigationProperty Name="Db_SysUser" Relationship="SysModel.Db_SysUserSysUserLog" FromRole="SysUserLog" ToRole="Db_SysUser" />
+          <Property Name="Db_SysUser_loginName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="logType" Type="Int32" Nullable="false" >
+          </Property>
+          <Property Name="fkId" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <Association Name="Db_SysUserSysUserLog">
+          <End Type="SysModel.Db_SysUser" Role="Db_SysUser" Multiplicity="1" />
+          <End Type="SysModel.Db_SysUserLog" Role="SysUserLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Db_SysUser">
+              <PropertyRef Name="loginName" />
+            </Principal>
+            <Dependent Role="SysUserLog">
+              <PropertyRef Name="Db_SysUser_loginName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Db_SysTree">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" />
+          <Property Name="name" Type="String" Nullable="false" />
+          <Property Name="parentId" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Db_SysMenu" BaseType="SysModel.Db_SysTree" >
+          <NavigationProperty Name="Db_SysRole" Relationship="SysModel.Db_SysRoleDb_SysMenu" FromRole="Db_SysMenu" ToRole="Db_SysRole" />
+          <Property Name="url" Type="String" Nullable="true" MaxLength="100" />
+          <Property Name="icon" Type="String" Nullable="true" MaxLength="50" />
+        </EntityType>
+        <Association Name="Db_SysRoleDb_SysMenu">
+          <End Type="SysModel.Db_SysRole" Role="Db_SysRole" Multiplicity="*" />
+          <End Type="SysModel.Db_SysMenu" Role="Db_SysMenu" Multiplicity="*" />
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="SysModelStoreContainer" CdmEntityContainer="SysModelContainer">
+    <EntitySetMapping Name="Db_SysRoleSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysRole)">
+        <MappingFragment StoreEntitySet="Db_SysRoleSet">
+          <ScalarProperty Name="roleName" ColumnName="roleName" />
+          <ScalarProperty Name="describe" ColumnName="describe" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_SysUserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysUser)">
+        <MappingFragment StoreEntitySet="Db_SysUserSet">
+          <ScalarProperty Name="loginName" ColumnName="loginName" />
+          <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+          <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+          <ScalarProperty Name="isDisabled" ColumnName="isDisabled" />
+          <ScalarProperty Name="lastLoginTime" ColumnName="lastLoginTime" />
+          <ScalarProperty Name="passWord" ColumnName="passWord" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_ManagerUser)">
+        <MappingFragment StoreEntitySet="Db_SysUserSet_Db_ManagerUser">
+          <ScalarProperty Name="loginName" ColumnName="loginName" />
+          <ScalarProperty Name="fullName" ColumnName="fullName" />
+          <ScalarProperty Name="mobilePhone" ColumnName="mobilePhone" />
+          <ScalarProperty Name="jobTitle" ColumnName="jobTitle" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_MemberUser)">
+        <MappingFragment StoreEntitySet="Db_SysUserSet_Db_MemberUser">
+          <ScalarProperty Name="loginName" ColumnName="loginName" />
+          <ScalarProperty Name="nickName" ColumnName="nickName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_SysMsgSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysMsg)">
+        <MappingFragment StoreEntitySet="Db_SysMsgSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+          <ScalarProperty Name="msgType" ColumnName="msgType" />
+          <ScalarProperty Name="message" ColumnName="message" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysUserLog)">
+        <MappingFragment StoreEntitySet="Db_SysMsgSet_Db_SysUserLog">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Db_SysUser_loginName" ColumnName="Db_SysUser_loginName" />
+          <ScalarProperty Name="logType" ColumnName="logType" />
+          <ScalarProperty Name="fkId" ColumnName="fkId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysExceptionLog)">
+        <MappingFragment StoreEntitySet="Db_SysMsgSet_Db_SysExceptionLog">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="errorCode" ColumnName="errorCode" />
+          <ScalarProperty Name="condtion" ColumnName="condtion" />
+          <ScalarProperty Name="source" ColumnName="source" />
+          <ScalarProperty Name="stackTrace" ColumnName="stackTrace" />
+          <ScalarProperty Name="targetSite" ColumnName="targetSite" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Db_SysTreeSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysTree)">
+        <MappingFragment StoreEntitySet="Db_SysTreeSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="parentId" ColumnName="parentId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysMenu)">
+        <MappingFragment StoreEntitySet="Db_SysTreeSet_Db_SysMenu">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="url" ColumnName="url" />
+          <ScalarProperty Name="icon" ColumnName="icon" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="Db_SysUserDb_SysRole" TypeName="SysModel.Db_SysUserDb_SysRole" StoreEntitySet="Db_SysUserDb_SysRole">
+      <EndProperty Name="Db_SysUser">
+        <ScalarProperty Name="loginName" ColumnName="Db_SysUser_loginName" />
+      </EndProperty>
+      <EndProperty Name="Db_SysRole">
+        <ScalarProperty Name="roleName" ColumnName="Db_SysRole_roleName" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="Db_SysRoleDb_SysMenu" TypeName="SysModel.Db_SysRoleDb_SysMenu" StoreEntitySet="Db_SysRoleDb_SysMenu">
+      <EndProperty Name="Db_SysRole">
+        <ScalarProperty Name="roleName" ColumnName="Db_SysRole_roleName" />
+      </EndProperty>
+      <EndProperty Name="Db_SysMenu">
+        <ScalarProperty Name="Id" ColumnName="Db_SysMenu_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

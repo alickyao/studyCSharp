@@ -17,39 +17,24 @@ namespace NewCyclone.Controllers
         [HttpGet]
         public string testException()
         {
-            SysManagerUser smu = new SysManagerUser();
-            smu.id = "123";
             try
             {
-                //smu.getInfo();
-                smu.saveInfo();
+                SysUser user = new SysManagerUser();
+                user.getInfo();
+                return "ok";
             }
             catch (SysException ex)
             {
-                ex.saveException(SysMessageType.错误);
+                ex.saveException(SysMessageType.异常);
                 return ex.ToString();
             }
-            return "";
-        }
-
-        [HttpGet]
-        public List<SysLog> testDb() {
-            SysContext db = new SysContext();
-            var r = (from x in db.sysLogs
-                                   select new 
-                                   {
-                                       id = x.id,
-                                       message = x.message
-                                   }).ToList();
-            List<SysLog> result = new List<SysLog>();
-            foreach (var s in r) {
-                result.Add(new SysLog()
-                {
-                    id = s.id,
-                    message = s.message
-                });
+            catch (Exception e)
+            {
+                SysException ex = new SysException(e);
+                ex.saveException(SysMessageType.异常);
+                return ex.ToString();
             }
-            return result;
+            return "ok";
         }
     }
 }
