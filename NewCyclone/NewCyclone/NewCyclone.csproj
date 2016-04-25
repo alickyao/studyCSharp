@@ -532,6 +532,7 @@
     </Compile>
     <Compile Include="Models\SysBase.cs" />
     <Compile Include="Models\SysException.cs" />
+    <Compile Include="Models\SysTree.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
