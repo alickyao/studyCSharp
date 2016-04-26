@@ -113,11 +113,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Set\SysMenu.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\manager.css" />
     <Content Include="Content\themes\black\accordion.css" />
     <Content Include="Content\themes\black\calendar.css" />
     <Content Include="Content\themes\black\combo.css" />
@@ -427,6 +429,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-1.11.3.intellisense.js" />
     <Content Include="Scripts\easyloader.js" />
+    <Content Include="Scripts\easyuivalidate.js" />
     <Content Include="Scripts\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
     <Content Include="Scripts\jquery.easyui-1.4.3.js" />
@@ -489,8 +492,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ApiSysUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="DataBase\Db_ManagerUser.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
@@ -532,6 +536,7 @@
     </Compile>
     <Compile Include="Models\SysBase.cs" />
     <Compile Include="Models\SysException.cs" />
+    <Compile Include="Models\SysMenu.cs" />
     <Compile Include="Models\SysTree.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -567,8 +572,12 @@
       <DependentUpon>SysModel.edmx</DependentUpon>
     </Content>
     <Content Include="Scripts\jquery-1.11.3.min.map" />
-    <Content Include="Views\Shared\PcWeb_BootStrapLayout.cshtml" />
+    <Content Include="Views\Shared\BootStrapLayout.cshtml" />
     <Content Include="Views\Home\index.cshtml" />
+    <Content Include="Views\Shared\EasyUiLayout.cshtml" />
+    <Content Include="Views\Manager\login.cshtml" />
+    <Content Include="Views\Manager\index.cshtml" />
+    <Content Include="Views\Manager\workTab.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSysMenu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SysMenu>
+    <text>业务</text>
+    <roles>
+      <string>admin</string>
+      <string>user</string>
+    </roles>
+    <icon>icon-edit</icon>
+    <url />
+    <children>
+      <SysMenu>
+        <text>会员</text>
+        <children>
+          <SysMenu>
+            <text>会员管理</text>
+            <url />
+          </SysMenu>
+        </children>
+      </SysMenu>
+    </children>
+  </SysMenu>
+  <SysMenu>
+    <text>资源</text>
+    <icon>icon-more</icon>
+    <roles>
+      <string>admin</string>
+      <string>user</string>
+    </roles>
+    <children>
+      <SysMenu>
+        <text>分类管理</text>
+      </SysMenu>
+    </children>
+  </SysMenu>
+  <SysMenu>
+    <text>管理</text>
+    <icon>icon-man</icon>
+    <roles>
+      <string>admin</string>
+    </roles>
+    <children>
+      <SysMenu>
+        <text>系统管理员维护</text>
+      </SysMenu>
+      <SysMenu>
+        <text>系统日志查看</text>
+      </SysMenu>
+    </children>
+  </SysMenu>
+</ArrayOfSysMenu>

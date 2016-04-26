@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -27,7 +28,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 基本返回类型
     /// </summary>
-    public enum BaseResponse {
+    public enum BaseResponseCode {
         /// <summary>
         /// 操作成功
         /// </summary>
@@ -41,13 +42,28 @@ namespace NewCyclone.Models
     /// <summary>
     /// 标准返回对象
     /// </summary>
+    public class BaseResponse {
+        /// <summary>
+        /// 代码
+        /// </summary>
+        public BaseResponseCode code { get; set; }
+
+        /// <summary>
+        /// 返回提示
+        /// </summary>
+        public string msg { get; set; }
+    }
+
+    /// <summary>
+    /// 带数据的标准返回对象
+    /// </summary>
     /// <typeparam name="T"></typeparam>
     public class BaseResponse<T> {
 
         /// <summary>
         /// 代码
         /// </summary>
-        public BaseResponse code { get; set; }
+        public BaseResponseCode code { get; set; }
 
         /// <summary>
         /// 返回提示
@@ -58,5 +74,32 @@ namespace NewCyclone.Models
         /// 具体的返回内容
         /// </summary>
         public T result { get; set; }
+    }
+
+    /// <summary>
+    /// 系统验证
+    /// </summary>
+    public class SysValidata {
+        /// <summary>
+        /// 参数验证
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponse<List<ValidationResult>> valiData(object condtion) {
+            BaseResponse<List<ValidationResult>> result = new BaseResponse<List<ValidationResult>>();
+
+            var context = new ValidationContext(condtion, null, null);
+
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(condtion, context, results, true);
+
+            result.result = results;
+
+            if (results != null && results.Count > 0) {
+                result.code = BaseResponseCode.异常;
+                result.msg = results[0].ErrorMessage;
+            }
+            return result;
+        }
     }
 }

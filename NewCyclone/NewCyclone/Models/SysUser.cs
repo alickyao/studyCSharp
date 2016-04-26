@@ -4,17 +4,18 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using NewCyclone.DataBase;
+using System.ComponentModel.DataAnnotations;
 
 namespace NewCyclone.Models
 {
     /// <summary>
     /// 角色
     /// </summary>
-    public class Roles {
+    public class SysRoles {
         /// <summary>
         /// 系统全部角色
         /// </summary>
-        public string[] RolesList = { "admin", "user", "member", "guest" };
+        public static string[] RolesList = { "admin", "user", "member", "guest" };
     }
 
     /// <summary>
@@ -28,9 +29,9 @@ namespace NewCyclone.Models
         public string loginName { get; set; }
 
         /// <summary>
-        /// 角色
+        /// 角色用户的角色
         /// </summary>
-        public string[] role { get; set; }
+        public string role { get; set; }
 
 
         /// <summary>
@@ -38,6 +39,11 @@ namespace NewCyclone.Models
         /// </summary>
         public DateTime createdOn { get; set; }
 
+
+        /// <summary>
+        /// 最后一次登录时间
+        /// </summary>
+        public Nullable<DateTime> lastLoginTime { get; set; }
 
         /// <summary>
         /// 是否已经禁用
@@ -49,13 +55,24 @@ namespace NewCyclone.Models
         /// 删除用户
         /// </summary>
         /// <returns>返回被删除的用户对象</returns>
-        public SysUser delete() {
-            return this;
+        public void delete() {
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysUserSet.Single(p => p.loginName == loginName);
+                db.Db_SysUserSet.Remove(d);
+                db.SaveChanges();
+            }
         }
+
         /// <summary>
         /// 获取用户信息
         /// </summary>
         public abstract void getInfo();
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="loginname"></param>
+        public abstract void getInfo(string loginname);
 
         /// <summary>
         /// 保存用户信息
@@ -80,7 +97,117 @@ namespace NewCyclone.Models
         /// 职位
         /// </summary>
         public string jobTitle;
-        
+
+
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        public SysManagerUser() {
+
+        }
+
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="loginname">登录名</param>
+        public SysManagerUser(string loginname) {
+            getInfo(loginname);
+        }
+
+        #region -- 用户菜单
+        private List<SysMenu> userMenu = new List<SysMenu>();
+
+        /// <summary>
+        /// 获取用户的菜单(根据用户的角色)
+        /// </summary>
+        /// <returns></returns>
+        public List<SysMenu> getUserMenu()
+        {
+            List<SysMenu> m = SysMenu.sysMenu;
+            foreach (var s in m)
+            {
+                if (s.roles.Count == 0 ? true : s.roles.Contains(this.role))
+                {
+                    this.userMenu.Add(new SysMenu()
+                    {
+                        icon = s.icon,
+                        roles = s.roles,
+                        text = s.text,
+                        url = s.url,
+                        children = s.children == null ? new List<SysMenu>() : getUserCheldMenu(s.children)
+                    });
+                }
+            }
+            return this.userMenu;
+        }
+
+
+        /// <summary>
+        /// 根据权限递归子菜单
+        /// </summary>
+        /// <param name="children"></param>
+        /// <returns></returns>
+        private List<SysMenu> getUserCheldMenu(List<SysMenu> children)
+        {
+            List<SysMenu> child = new List<SysMenu>();
+            foreach ( var s in children) {
+                if (s.roles.Count == 0 ? true : s.roles.Contains(this.role))
+                {
+                    child.Add(new SysMenu()
+                    {
+                        icon = s.icon,
+                        roles = s.roles,
+                        text = s.text,
+                        url = s.url,
+                        children = s.children == null ? new List<SysMenu>() : getUserCheldMenu(s.children)
+                    });
+                }
+            }
+            return child;
+        }
+        #endregion
+
+
+        #region -- 验证与新增
+
+        private int getLoginNameCount(string lgname) {
+            using (var db = new SysModelContainer()) {
+                return (from c in db.Db_SysUserSet where c.loginName.Equals(lgname) select c.loginName).Count();
+            }
+        }
+
+        /// <summary>
+        /// 注册新的用户
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public SysManagerUser create(ViewModelUserRegisterRequest condtion) {
+
+            int c = getLoginNameCount(condtion.loginname);
+            if (c > 0) {
+                throw new SysException("登录名已存在", SysExceptionType.参数未能通过验证, condtion);
+            }
+            using (var db = new SysModelContainer()) {
+                Db_ManagerUser dbuser = new Db_ManagerUser() {
+                    createdOn = DateTime.Now,
+                    fullName = condtion.fullName,
+                    isDeleted = false,
+                    isDisabled = false,
+                    jobTitle = condtion.jobTitle,
+                    loginName = condtion.loginname,
+                    mobilePhone = condtion.mobilePhone,
+                    passWord = "abc",
+                    role = condtion.role
+                };
+                db.Db_SysUserSet.Add(dbuser);
+                db.SaveChanges();
+            }
+            getInfo(condtion.loginname);
+            return this;
+        }
+
+        #endregion
+
         /// <summary>
         /// 获取用户信息
         /// </summary>
@@ -88,9 +215,36 @@ namespace NewCyclone.Models
         {
             using (var db = new SysModelContainer())
             {
-
+                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == this.loginName);
+                setUserInfo(d);
             }
-            throw new SysException("自定义的系统错误", SysExceptionType.系统未能找到匹配的信息);
+        }
+
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="loginname"></param>
+        public override void getInfo(string loginname)
+        {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == loginname);
+                setUserInfo(d);
+            }
+        }
+
+        /// <summary>
+        /// 从数据库中赋值到对象
+        /// </summary>
+        /// <param name="d"></param>
+        private void setUserInfo(Db_ManagerUser d) {
+            this.loginName = d.loginName;
+            this.fullName = d.fullName;
+            this.jobTitle = d.jobTitle;
+            this.mobilePhone = d.mobilePhone;
+            this.lastLoginTime = d.lastLoginTime;
+            this.role = d.role;
+            this.isDisabled = d.isDisabled;
+            this.createdOn = d.createdOn;
         }
 
         /// <summary>
@@ -98,8 +252,42 @@ namespace NewCyclone.Models
         /// </summary>
         public override void saveInfo()
         {
-            string s = "hello";
-            int i = int.Parse(s);
+            
         }
+    }
+
+    /// <summary>
+    /// 新增管理员请求参数
+    /// </summary>
+    public class ViewModelUserRegisterRequest {
+        /// <summary>
+        /// 登录名
+        /// </summary>
+        [Required(AllowEmptyStrings =false,ErrorMessage ="登录名必填")]
+        [StringLength(50,MinimumLength =5,ErrorMessage ="登录名至少需要5个字符")]
+        public string loginname { get; set; }
+
+        /// <summary>
+        /// 角色（可选admin,user）
+        /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "角色信息必填")]
+        public string role { get; set; }
+
+        /// <summary>
+        /// 姓名
+        /// </summary>
+        [Required(AllowEmptyStrings = false,ErrorMessage ="请填写姓名")]
+        [MaxLength(50)]
+        public string fullName;
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        [Required(AllowEmptyStrings = true)]
+        [Phone(ErrorMessage = "电话号码格式不正确")]
+        public string mobilePhone;
+        /// <summary>
+        /// 职位
+        /// </summary>
+        public string jobTitle;
     }
 }

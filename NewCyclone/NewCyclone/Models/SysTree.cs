@@ -24,25 +24,5 @@ namespace NewCyclone.Models
         public string _parentId { get; set; }
     }
 
-    /// <summary>
-    /// 系统菜单项
-    /// </summary>
-    public class SysMenu : SysTree {
-
-
-        /// <summary>
-        /// 可访问的角色
-        /// </summary>
-        public string[] roles { get; set; }
-
-        /// <summary>
-        /// 对应的链接
-        /// </summary>
-        public string url { get; set; }
-
-        /// <summary>
-        /// 子节点
-        /// </summary>
-        public LinkedList<SysMenu> child { get; set; }
-    }
+    
 }

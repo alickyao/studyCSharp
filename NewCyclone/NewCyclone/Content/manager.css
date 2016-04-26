@@ -1,0 +1,28 @@
+﻿body {
+    font-size:0.9em;
+    margin:1px;
+    padding:0;
+}
+
+
+/*
+    首页头部
+    */
+#MainTitle{
+    width:100%;
+    overflow:hidden;
+}
+    #MainTitle #TopLogo {
+        width:300px;
+        height:60px;
+        float:left;
+        background-image:url('images/PCLogo.jpg');
+    }
+    #MainTitle #TopNav {
+        float:right;
+        padding-right:2px;
+        padding-top:2px;
+    }
+        #MainTitle #TopNav #MainSearch {
+            text-align:right;
+        }

@@ -20,7 +20,7 @@ namespace NewCyclone.Models
         /// <summary>
         /// 错误文本信息
         /// </summary>
-        private string message { get; set; }
+        public string message { get; set; }
 
         /// <summary>
         /// 请求参数
@@ -78,7 +78,7 @@ namespace NewCyclone.Models
         /// 保存异常消息
         /// </summary>
         /// <param name="type"></param>
-        public void saveException(SysMessageType type) {
+        public void saveException() {
 
             if (!(this.code == SysExceptionType.发生其他系统异常)) {
                 this.source = base.Source;
@@ -93,7 +93,7 @@ namespace NewCyclone.Models
                     createdOn = DateTime.Now,
                     errorCode = this.code.GetHashCode(),
                     message = this.message,
-                    msgType = type.GetHashCode(),
+                    msgType = SysMessageType.异常.GetHashCode(),
                     source = this.source,
                     stackTrace = this.stackTrace,
                     targetSite = this.targetSite
@@ -117,8 +117,17 @@ namespace NewCyclone.Models
     /// 错误类型
     /// </summary>
     public enum SysExceptionType {
+        /// <summary>
+        /// 传入的参数可能不符合要求
+        /// </summary>
         参数未能通过验证,
+        /// <summary>
+        /// 未能在系统中找到对应的信息
+        /// </summary>
         系统未能找到匹配的信息,
+        /// <summary>
+        /// 发送其他异常情况
+        /// </summary>
         发生其他系统异常
     }
 }

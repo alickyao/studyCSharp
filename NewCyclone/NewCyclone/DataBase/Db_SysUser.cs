@@ -26,6 +26,7 @@ namespace NewCyclone.DataBase
         public bool isDisabled { get; set; }
         public Nullable<System.DateTime> lastLoginTime { get; set; }
         public string passWord { get; set; }
+        public string role { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Db_SysUserLog> SysUserLog { get; set; }
