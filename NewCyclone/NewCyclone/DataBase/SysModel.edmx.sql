@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/25/2016 19:49:20
+-- Date Created: 04/26/2016 19:29:09
 -- Generated from EDMX file: E:\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
@@ -17,12 +17,6 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_Db_SysUserSysUserLog]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserSysUserLog];
-GO
-IF OBJECT_ID(N'[dbo].[FK_Db_SysUserLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg];
-GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_SysUser];
 GO
@@ -32,31 +26,37 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysExceptionLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog] DROP CONSTRAINT [FK_Db_SysExceptionLog_inherits_Db_SysMsg];
 GO
+IF OBJECT_ID(N'[dbo].[FK_Db_SysUserLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_SysUserSysUserLog]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserSysUserLog];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet];
-GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysExceptionLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysUserLog]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysTreeSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysTreeSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysUserLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog];
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_MemberUser]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysUserSet_Db_MemberUser];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysExceptionLog]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog];
 GO
 
 -- --------------------------------------------------
@@ -70,7 +70,8 @@ CREATE TABLE [dbo].[Db_SysUserSet] (
     [isDeleted] bit  NOT NULL,
     [isDisabled] bit  NOT NULL,
     [lastLoginTime] datetime  NULL,
-    [passWord] varchar(50)  NOT NULL
+    [passWord] varchar(50)  NOT NULL,
+    [role] varchar(50)  NOT NULL
 );
 GO
 
@@ -88,15 +89,6 @@ CREATE TABLE [dbo].[Db_SysTreeSet] (
     [Id] nvarchar(50)  NOT NULL,
     [name] nvarchar(max)  NOT NULL,
     [parentId] nvarchar(max)  NOT NULL
-);
-GO
-
--- Creating table 'Db_SysMsgSet_Db_SysUserLog'
-CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] (
-    [Db_SysUser_loginName] nvarchar(50)  NOT NULL,
-    [logType] int  NOT NULL,
-    [fkId] nvarchar(50)  NULL,
-    [Id] bigint  NOT NULL
 );
 GO
 
@@ -127,6 +119,15 @@ CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog] (
 );
 GO
 
+-- Creating table 'Db_SysMsgSet_Db_SysUserLog'
+CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] (
+    [Db_SysUser_loginName] nvarchar(50)  NOT NULL,
+    [logType] int  NOT NULL,
+    [fkId] nvarchar(50)  NULL,
+    [Id] bigint  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -149,12 +150,6 @@ ADD CONSTRAINT [PK_Db_SysTreeSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Db_SysMsgSet_Db_SysUserLog'
-ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
-ADD CONSTRAINT [PK_Db_SysMsgSet_Db_SysUserLog]
-    PRIMARY KEY CLUSTERED ([Id] ASC);
-GO
-
 -- Creating primary key on [loginName] in table 'Db_SysUserSet_Db_ManagerUser'
 ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser]
 ADD CONSTRAINT [PK_Db_SysUserSet_Db_ManagerUser]
@@ -173,33 +168,15 @@ ADD CONSTRAINT [PK_Db_SysMsgSet_Db_SysExceptionLog]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'Db_SysMsgSet_Db_SysUserLog'
+ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
+ADD CONSTRAINT [PK_Db_SysMsgSet_Db_SysUserLog]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- --------------------------------------------------
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
-
--- Creating foreign key on [Db_SysUser_loginName] in table 'Db_SysMsgSet_Db_SysUserLog'
-ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
-ADD CONSTRAINT [FK_Db_SysUserSysUserLog]
-    FOREIGN KEY ([Db_SysUser_loginName])
-    REFERENCES [dbo].[Db_SysUserSet]
-        ([loginName])
-    ON DELETE NO ACTION ON UPDATE NO ACTION;
-GO
-
--- Creating non-clustered index for FOREIGN KEY 'FK_Db_SysUserSysUserLog'
-CREATE INDEX [IX_FK_Db_SysUserSysUserLog]
-ON [dbo].[Db_SysMsgSet_Db_SysUserLog]
-    ([Db_SysUser_loginName]);
-GO
-
--- Creating foreign key on [Id] in table 'Db_SysMsgSet_Db_SysUserLog'
-ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
-ADD CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg]
-    FOREIGN KEY ([Id])
-    REFERENCES [dbo].[Db_SysMsgSet]
-        ([Id])
-    ON DELETE CASCADE ON UPDATE NO ACTION;
-GO
 
 -- Creating foreign key on [loginName] in table 'Db_SysUserSet_Db_ManagerUser'
 ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser]
@@ -222,6 +199,15 @@ GO
 -- Creating foreign key on [Id] in table 'Db_SysMsgSet_Db_SysExceptionLog'
 ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog]
 ADD CONSTRAINT [FK_Db_SysExceptionLog_inherits_Db_SysMsg]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysMsgSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysMsgSet_Db_SysUserLog'
+ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
+ADD CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_SysMsgSet]
         ([Id])

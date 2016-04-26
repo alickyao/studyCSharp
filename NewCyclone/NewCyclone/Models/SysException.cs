@@ -7,20 +7,26 @@ using Newtonsoft.Json;
 
 namespace NewCyclone.Models
 {
-    /// <summary>
-    /// 系统自定义的错误
-    /// </summary>
-    public class SysException : Exception
-    {
-        /// <summary>
-        /// 系统自定义的错误类别
-        /// </summary>
-        public SysExceptionType code { get; set; }
 
+    /// <summary>
+    /// 错误类型
+    /// </summary>
+    public enum SysExceptionType {
         /// <summary>
-        /// 错误文本信息
+        /// 表示这是一个自定义的异常
         /// </summary>
-        public string message { get; set; }
+        自定义,
+        /// <summary>
+        /// 表示这是一个来自系统的异常
+        /// </summary>
+        系统
+    }
+
+
+    /// <summary>
+    /// 系统自定义异常
+    /// </summary>
+    public class SysException : ApplicationException {
 
         /// <summary>
         /// 请求参数
@@ -28,106 +34,117 @@ namespace NewCyclone.Models
         private string condtion { get; set; }
 
         /// <summary>
-        /// 引发异常的应用程序或者对象的名称
+        /// 构造方法
         /// </summary>
-        private string source { get; set; }
-
-        /// <summary>
-        /// 引发错误的堆栈信息
-        /// </summary>
-        private string stackTrace { get; set; }
-
-        /// <summary>
-        /// 引发当前异常的方法
-        /// </summary>
-        private string targetSite { get; set; }
-
-        /// <summary>
-        /// 构造自定义的异常，并保存到系统日志
-        /// </summary>
-        /// <param name="message">错误信息</param>
-        /// <param name="code">自定义的异常类型</param>
-        /// <param name="condtion">导致错误的请求参数</param>
-        public SysException(string message, SysExceptionType code, object condtion = null) : base()
-        {
-
+        /// <param name="message">异常内容</param>
+        /// <param name="condtion">请求参数</param>
+        public SysException(string message, object condtion = null) : base(message) {
             
-
-            this.message = message;
-            this.code = code;
             if (condtion != null) {
                 this.condtion = JsonConvert.SerializeObject(condtion);
             }
         }
 
-        public SysException(Exception e, object condtion = null) : base(e.Message, e)
-        {
-            this.source = e.Source;
-            this.targetSite = e.TargetSite.ToString();
-            this.stackTrace = e.StackTrace;
-
-            this.message = e.Message;
-            this.code = SysExceptionType.发生其他系统异常;
-            if (condtion != null)
-            {
-                this.condtion = JsonConvert.SerializeObject(condtion);
-            }
-        }
-
         /// <summary>
-        /// 保存异常消息
+        /// 保存自定义的异常
         /// </summary>
-        /// <param name="type"></param>
-        public void saveException() {
-
-            if (!(this.code == SysExceptionType.发生其他系统异常)) {
-                this.source = base.Source;
-                this.targetSite = base.TargetSite.ToString();
-                this.stackTrace = base.StackTrace;
-            }
-
+        public void save() {
             using (var db = new SysModelContainer()) {
-                Db_SysExceptionLog log = new Db_SysExceptionLog()
-                {
+                Db_SysExceptionLog d = new Db_SysExceptionLog() {
                     condtion = this.condtion,
                     createdOn = DateTime.Now,
-                    errorCode = this.code.GetHashCode(),
-                    message = this.message,
+                    message = this.Message,
                     msgType = SysMessageType.异常.GetHashCode(),
-                    source = this.source,
-                    stackTrace = this.stackTrace,
-                    targetSite = this.targetSite
+                    source = this.Source,
+                    stackTrace = this.StackTrace,
+                    targetSite = this.TargetSite==null? null :this.TargetSite.ToString(),
+                    errorCode = SysExceptionType.自定义.GetHashCode()
                 };
-                db.Db_SysMsgSet.Add(log);
+                db.Db_SysMsgSet.Add(d);
                 db.SaveChanges();
             }
         }
 
         /// <summary>
-        /// 默认返回错误信息的文本
+        /// 返回标准带参数的异常返回对象
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public override string ToString()
+        public BaseResponse<T> getresult<T>(BaseResponse<T> response)
         {
-            return this.message;
+            response.code = BaseResponseCode.异常;
+            response.msg = this.Message;
+            return response;
         }
-    }
 
-    /// <summary>
-    /// 错误类型
-    /// </summary>
-    public enum SysExceptionType {
         /// <summary>
-        /// 传入的参数可能不符合要求
+        /// 返回标准异常返回对象
         /// </summary>
-        参数未能通过验证,
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public BaseResponse getresult(BaseResponse response)
+        {
+            response.code = BaseResponseCode.异常;
+            response.msg = this.Message;
+            return response;
+        }
+
+
+
+        private static string msg;
         /// <summary>
-        /// 未能在系统中找到对应的信息
+        /// 保存系统异常
         /// </summary>
-        系统未能找到匹配的信息,
+        /// <param name="e">异常</param>
+        /// <param name="request">当前信息的请求参数</param>
+
+        public static void save(Exception e, object request = null)
+        {
+            string condtion = string.Empty;
+            if (request != null) {
+                condtion = JsonConvert.SerializeObject(request); 
+            }
+            msg = e.Message;
+            using (var db = new SysModelContainer())
+            {
+                Db_SysExceptionLog d = new Db_SysExceptionLog()
+                {
+                    condtion = condtion,
+                    createdOn = DateTime.Now,
+                    message = e.Message,
+                    msgType = SysMessageType.异常.GetHashCode(),
+                    source = e.Source,
+                    stackTrace = e.StackTrace,
+                    targetSite = e.TargetSite == null ? null : e.TargetSite.ToString(),
+                    errorCode = SysExceptionType.系统.GetHashCode()
+                };
+                db.Db_SysMsgSet.Add(d);
+                db.SaveChanges();
+            }
+        }
+
+        
+
         /// <summary>
-        /// 发送其他异常情况
+        /// 返回标准带参数的异常返回对象
         /// </summary>
-        发生其他系统异常
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static BaseResponse<T> getResult<T>(BaseResponse<T> response) {
+            response.code = BaseResponseCode.异常;
+            response.msg = msg;
+            return response;
+        }
+
+        /// <summary>
+        /// 返回标准异常返回对象
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public static BaseResponse getResult(BaseResponse response) {
+            response.code = BaseResponseCode.异常;
+            response.msg = msg;
+            return response;
+        }
     }
 }

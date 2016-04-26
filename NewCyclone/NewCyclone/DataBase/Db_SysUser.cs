@@ -14,12 +14,6 @@ namespace NewCyclone.DataBase
     
     public abstract partial class Db_SysUser
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Db_SysUser()
-        {
-            this.SysUserLog = new HashSet<Db_SysUserLog>();
-        }
-    
         public string loginName { get; set; }
         public System.DateTime createdOn { get; set; }
         public bool isDeleted { get; set; }
@@ -27,8 +21,5 @@ namespace NewCyclone.DataBase
         public Nullable<System.DateTime> lastLoginTime { get; set; }
         public string passWord { get; set; }
         public string role { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_SysUserLog> SysUserLog { get; set; }
     }
 }

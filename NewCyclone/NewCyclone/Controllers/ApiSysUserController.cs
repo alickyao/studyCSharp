@@ -20,8 +20,8 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public string[] getRolsList() {
-            return SysRoles.RolesList;
+        public List<SysRoles> getRolsList() {
+            return SysRoles.sysRoles;
         }
 
         /// <summary>
@@ -31,39 +31,21 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         public BaseResponse<SysManagerUser> createUser(ViewModelUserRegisterRequest condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
-            
-            var v = SysValidata.valiData(condtion);
-            if (v.code == BaseResponseCode.正常)
+            SysManagerUser smu = new SysManagerUser();
+            try
             {
-                try
-                {
-                    SysManagerUser smu = new SysManagerUser();
-                    result.result = smu.create(condtion);
-                    return result;
-                }
-                catch (SysException ex)
-                {
-                    ex.saveException();
-                    result.code = BaseResponseCode.异常;
-                    result.msg = ex.message;
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    SysException ex = new SysException(e, condtion);
-                    ex.saveException();
-                    result.code = BaseResponseCode.异常;
-                    result.msg = ex.message;
-                    return result;
-                }
+                result.result = smu.create(condtion);
             }
-            else {
-                return new BaseResponse<SysManagerUser>()
-                {
-                    code = v.code,
-                    msg = v.msg
-                };
+            catch (SysException r)
+            {
+                r.save();
+                return r.getresult(result);
             }
+            catch (Exception e) {
+                SysException.save(e, condtion);
+                return SysException.getResult(result);
+            }
+            return result;
         }
 
         /// <summary>
@@ -75,8 +57,15 @@ namespace NewCyclone.Controllers
         public BaseResponse delete(string loginName)
         {
             BaseResponse res = new BaseResponse();
-            SysUser user = new SysManagerUser(loginName);
-            user.delete();
+            try
+            {
+                SysUser user = new SysManagerUser(loginName);
+                user.delete();
+            }
+            catch (Exception e) {
+                SysException.save(e, loginName);
+                res = SysException.getResult(res);
+            }
             return res;
         }
     }

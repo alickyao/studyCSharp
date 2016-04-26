@@ -5,6 +5,7 @@ using System.Web;
 using System.IO;
 using NewCyclone.DataBase;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Serialization;
 
 namespace NewCyclone.Models
 {
@@ -15,7 +16,53 @@ namespace NewCyclone.Models
         /// <summary>
         /// 系统全部角色
         /// </summary>
-        public static string[] RolesList = { "admin", "user", "member", "guest" };
+        public static List<SysRoles> sysRoles { get; private set; }
+
+        static SysRoles() {
+            //sysRoles = new List<SysRoles>() {
+            //    new SysRoles() {
+            //        discribe = "系统管理员权限",
+            //        name = "管理员",
+            //        role = "admin"
+            //    },
+            //    new SysRoles() {
+            //        discribe = "系统工作人员",
+            //        name = "工作人员",
+            //        role = "user"
+            //    },
+            //    new SysRoles() {
+            //        discribe = "系统会员用户",
+            //        name = "会员",
+            //        role = "member"
+            //    }
+            //};
+
+            string path = HttpContext.Current.Server.MapPath("/App_Set/SysRole.xml");
+            //var writer = new XmlSerializer(typeof(List<SysRoles>));
+            //var wfile = new StreamWriter(path);
+            //writer.Serialize(wfile, sysRoles);
+            //wfile.Close();
+
+            //从文件反序列化
+            XmlSerializer reader = new XmlSerializer(typeof(List<SysRoles>));
+            StreamReader file = new StreamReader(path);
+            sysRoles = (List<SysRoles>)reader.Deserialize(file);
+            file.Close();
+        }
+
+
+        /// <summary>
+        /// 角色
+        /// </summary>
+        public string role { get; set; }
+        /// <summary>
+        /// 角色名
+        /// </summary>
+        public string name { get; set; }
+        /// <summary>
+        /// 角色描述
+        /// </summary>
+        public string discribe { get; set; }
     }
 
     /// <summary>
@@ -59,7 +106,7 @@ namespace NewCyclone.Models
             using (var db = new SysModelContainer())
             {
                 var d = db.Db_SysUserSet.Single(p => p.loginName == loginName);
-                db.Db_SysUserSet.Remove(d);
+                d.isDeleted = true;
                 db.SaveChanges();
             }
         }
@@ -182,10 +229,13 @@ namespace NewCyclone.Models
         /// <param name="condtion"></param>
         /// <returns></returns>
         public SysManagerUser create(ViewModelUserRegisterRequest condtion) {
-
+            var v = SysValidata.valiData(condtion);
+            if (v.code == BaseResponseCode.异常) {
+                throw new SysException(v.msg, condtion);
+            }
             int c = getLoginNameCount(condtion.loginname);
             if (c > 0) {
-                throw new SysException("登录名已存在", SysExceptionType.参数未能通过验证, condtion);
+                throw new SysException("登录名已存在", condtion);
             }
             using (var db = new SysModelContainer()) {
                 Db_ManagerUser dbuser = new Db_ManagerUser() {
