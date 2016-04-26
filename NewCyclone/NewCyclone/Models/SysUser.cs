@@ -217,6 +217,11 @@ namespace NewCyclone.Models
 
         #region -- 验证与新增
 
+        /// <summary>
+        /// 获取登录名在数据库中出现的次数
+        /// </summary>
+        /// <param name="lgname"></param>
+        /// <returns></returns>
         private int getLoginNameCount(string lgname) {
             using (var db = new SysModelContainer()) {
                 return (from c in db.Db_SysUserSet where c.loginName.Equals(lgname) select c.loginName).Count();
@@ -258,6 +263,9 @@ namespace NewCyclone.Models
 
         #endregion
 
+
+        #region -- 获取
+
         /// <summary>
         /// 获取用户信息
         /// </summary>
@@ -296,6 +304,8 @@ namespace NewCyclone.Models
             this.isDisabled = d.isDisabled;
             this.createdOn = d.createdOn;
         }
+
+        #endregion
 
         /// <summary>
         /// 保存用户信息
@@ -339,5 +349,32 @@ namespace NewCyclone.Models
         /// 职位
         /// </summary>
         public string jobTitle;
+    }
+
+    /// <summary>
+    /// 用户登录请求
+    /// </summary>
+    public class ViewModelLoginReqeust {
+        /// <summary>
+        /// 登录名
+        /// </summary>
+        [Required(ErrorMessage ="登录名必填")]
+        public string loginName { get; set; }
+
+        /// <summary>
+        /// 密码
+        /// </summary>
+        [Required(ErrorMessage = "请输入密码")]
+        public string pwd { get; set; }
+
+        /// <summary>
+        /// 登陆时的IP地址
+        /// </summary>
+        public string ip { get; set; }
+
+        /// <summary>
+        /// 登陆设备信息
+        /// </summary>
+        public string device { get; set; }
     }
 }
