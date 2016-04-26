@@ -307,6 +307,31 @@ namespace NewCyclone.Models
 
         #endregion
 
+
+        #region -- 登陆
+
+        /// <summary>
+        /// 验证登陆
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public SysManagerUser checkLogin(ViewModelLoginReqeust condtion) {
+            var r = SysValidata.valiData(condtion);
+            if (r.code == BaseResponseCode.异常) {
+                throw new SysException(r.msg, condtion);
+            }
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().SingleOrDefault(p => p.loginName.Equals(condtion.loginName) && p.passWord.ToLower().Equals(condtion.pwd.ToLower()) && !p.isDeleted && !p.isDisabled);
+                if (d == null) {
+                    throw new SysException("用户名或密码不正确", condtion);
+                }
+                setUserInfo(d);
+                return this;
+            }
+        }
+
+        #endregion
+
         /// <summary>
         /// 保存用户信息
         /// </summary>
