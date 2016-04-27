@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/27/2016 15:50:31
--- Generated from EDMX file: D:\project\git\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 04/28/2016 05:56:06
+-- Generated from EDMX file: E:\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -36,6 +36,12 @@ GO
 
 IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocImgRote]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_DocImgRote];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysFileSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysFileSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet];
@@ -98,7 +104,21 @@ CREATE TABLE [dbo].[Db_SysDocSet] (
     [createdOn] datetime  NOT NULL,
     [modifiedOn] datetime  NOT NULL,
     [isDeleted] bit  NOT NULL,
-    [caption] nvarchar(max)  NOT NULL
+    [caption] nvarchar(max)  NOT NULL,
+    [discribe] nvarchar(max)  NULL,
+    [text] nvarchar(max)  NULL,
+    [headImg] nvarchar(max)  NULL,
+    [cat] varchar(50)  NULL
+);
+GO
+
+-- Creating table 'Db_SysFileSet'
+CREATE TABLE [dbo].[Db_SysFileSet] (
+    [Id] varchar(50)  NOT NULL,
+    [fId] varchar(50)  NOT NULL,
+    [createdOn] datetime  NOT NULL,
+    [url] varchar(max)  NOT NULL,
+    [sort] int  NULL
 );
 GO
 
@@ -172,6 +192,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_SysDocSet'
 ALTER TABLE [dbo].[Db_SysDocSet]
 ADD CONSTRAINT [PK_Db_SysDocSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysFileSet'
+ALTER TABLE [dbo].[Db_SysFileSet]
+ADD CONSTRAINT [PK_Db_SysFileSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

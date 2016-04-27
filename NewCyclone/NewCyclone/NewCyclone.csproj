@@ -549,6 +549,7 @@
     <Compile Include="Models\SysDoc.cs" />
     <Compile Include="Models\SysException.cs" />
     <Compile Include="Models\SysMenu.cs" />
+    <Compile Include="Models\SysMsg.cs" />
     <Compile Include="Models\SysTree.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
