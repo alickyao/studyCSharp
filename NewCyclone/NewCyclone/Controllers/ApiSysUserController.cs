@@ -13,15 +13,39 @@ namespace NewCyclone.Controllers
     /// <summary>
     /// 系统管理员相关
     /// </summary>
-    public class ApiSysManagerUserController: ApiController
+    public class ApiSysManagerUserController : ApiController
     {
+
         /// <summary>
         /// 获取系统角色信息
         /// </summary>
+        /// <param name="t">角色的类型</param>
         /// <returns></returns>
         [HttpGet]
-        public List<SysRoles> getRolsList() {
-            return SysRoles.sysRoles;
+        public List<SysRoles> getRolsList(SysRolesType t) {
+            return SysRoles.getRolesList(t);
+        }
+
+        /// <summary>
+        /// 验证并登陆
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public BaseResponse<SysManagerUser> login(ViewModelLoginReqeust condtion) {
+            BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
+            try
+            {
+                SysManagerUser smu = new SysManagerUser();
+                result.result = smu.checkLogin(condtion);
+            }
+            catch (SysException ex)
+            {
+                result = ex.getresult(result, true);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
         }
 
         /// <summary>
@@ -38,12 +62,10 @@ namespace NewCyclone.Controllers
             }
             catch (SysException r)
             {
-                r.save();
-                return r.getresult(result);
+                return r.getresult(result,true);
             }
             catch (Exception e) {
-                SysException.save(e, condtion);
-                return SysException.getResult(result);
+                return SysException.getResult(result, e, condtion);
             }
             return result;
         }
@@ -63,8 +85,7 @@ namespace NewCyclone.Controllers
                 user.delete();
             }
             catch (Exception e) {
-                SysException.save(e, loginName);
-                res = SysException.getResult(res);
+                res = SysException.getResult(res, e, loginName);
             }
             return res;
         }

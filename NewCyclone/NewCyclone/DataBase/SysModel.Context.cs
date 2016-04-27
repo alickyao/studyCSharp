@@ -28,5 +28,7 @@ namespace NewCyclone.DataBase
         public virtual DbSet<Db_SysUser> Db_SysUserSet { get; set; }
         public virtual DbSet<Db_SysMsg> Db_SysMsgSet { get; set; }
         public virtual DbSet<Db_SysTree> Db_SysTreeSet { get; set; }
+        public virtual DbSet<Db_SysDoc> Db_SysDocSet { get; set; }
+        public virtual DbSet<Db_SysFile> Db_SysFileSet { get; set; }
     }
 }

@@ -48,7 +48,7 @@ namespace NewCyclone.Models
         /// <summary>
         /// 保存自定义的异常
         /// </summary>
-        public void save() {
+        private void save() {
             using (var db = new SysModelContainer()) {
                 Db_SysExceptionLog d = new Db_SysExceptionLog() {
                     condtion = this.condtion,
@@ -66,45 +66,52 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
-        /// 返回标准带参数的异常返回对象
+        /// 返回标准带参数的异常返回对象，并可选是否保存该异常
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="response">返回对象</param>
+        /// <param name="saveLog">是否保存该异常</param>
         /// <returns></returns>
-        public BaseResponse<T> getresult<T>(BaseResponse<T> response)
+        public BaseResponse<T> getresult<T>(BaseResponse<T> response, bool saveLog = false)
         {
+            if (saveLog) {
+                save();
+            }
             response.code = BaseResponseCode.异常;
             response.msg = this.Message;
             return response;
         }
 
         /// <summary>
-        /// 返回标准异常返回对象
+        /// 返回标准异常返回对象，并可选是否保存该异常
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="response">返回对象</param>
+        /// <param name="saveLog">是否保存该异常</param>
         /// <returns></returns>
-        public BaseResponse getresult(BaseResponse response)
+        public BaseResponse getresult(BaseResponse response, bool saveLog = false)
         {
+            if (saveLog)
+            {
+                save();
+            }
             response.code = BaseResponseCode.异常;
             response.msg = this.Message;
             return response;
         }
 
 
-
-        private static string msg;
         /// <summary>
         /// 保存系统异常
         /// </summary>
         /// <param name="e">异常</param>
         /// <param name="request">当前信息的请求参数</param>
 
-        public static void save(Exception e, object request = null)
+        private static void save(Exception e, object request = null)
         {
             string condtion = string.Empty;
             if (request != null) {
                 condtion = JsonConvert.SerializeObject(request); 
             }
-            msg = e.Message;
             using (var db = new SysModelContainer())
             {
                 Db_SysExceptionLog d = new Db_SysExceptionLog()
@@ -123,27 +130,43 @@ namespace NewCyclone.Models
             }
         }
 
-        
+
 
         /// <summary>
-        /// 返回标准带参数的异常返回对象
+        /// 返回标准带参数的异常返回对象，并可选是否保存该异常
         /// </summary>
         /// <typeparam name="T"></typeparam>
+        /// <param name="response">返回对象</param>
+        /// <param name="e">异常信息</param>
+        /// <param name="condtion">请求参数</param>
+        /// <param name="saveLog">是否保存异常，默认为true</param>
         /// <returns></returns>
-        public static BaseResponse<T> getResult<T>(BaseResponse<T> response) {
+        public static BaseResponse<T> getResult<T>(BaseResponse<T> response,Exception e,object condtion = null,bool saveLog = true) {
+
+            if (saveLog)
+            {
+                save(e, condtion);
+            }
             response.code = BaseResponseCode.异常;
-            response.msg = msg;
+            response.msg = e.Message;
             return response;
         }
 
         /// <summary>
-        /// 返回标准异常返回对象
+        /// 返回标准异常返回对象，并可选是否保存异常
         /// </summary>
-        /// <param name="response"></param>
+        /// <param name="response">返回对象</param>
+        /// <param name="e">异常信息</param>
+        /// <param name="condtion">请求参数</param>
+        /// <param name="saveLog">是否保存异常，默认为true</param>
         /// <returns></returns>
-        public static BaseResponse getResult(BaseResponse response) {
+        public static BaseResponse getResult(BaseResponse response, Exception e, object condtion = null, bool saveLog = true) {
+            if (saveLog)
+            {
+                save(e, condtion);
+            }
             response.code = BaseResponseCode.异常;
-            response.msg = msg;
+            response.msg = e.Message;
             return response;
         }
     }

@@ -10,6 +10,20 @@ using System.Xml.Serialization;
 namespace NewCyclone.Models
 {
     /// <summary>
+    /// 系统角色类型
+    /// </summary>
+    public enum SysRolesType {
+        /// <summary>
+        /// 后台专用角色
+        /// </summary>
+        后台,
+        /// <summary>
+        /// 其他角色
+        /// </summary>
+        其他
+    }
+
+    /// <summary>
     /// 角色
     /// </summary>
     public class SysRoles {
@@ -19,35 +33,21 @@ namespace NewCyclone.Models
         public static List<SysRoles> sysRoles { get; private set; }
 
         static SysRoles() {
-            //sysRoles = new List<SysRoles>() {
-            //    new SysRoles() {
-            //        discribe = "系统管理员权限",
-            //        name = "管理员",
-            //        role = "admin"
-            //    },
-            //    new SysRoles() {
-            //        discribe = "系统工作人员",
-            //        name = "工作人员",
-            //        role = "user"
-            //    },
-            //    new SysRoles() {
-            //        discribe = "系统会员用户",
-            //        name = "会员",
-            //        role = "member"
-            //    }
-            //};
 
             string path = HttpContext.Current.Server.MapPath("/App_Set/SysRole.xml");
-            //var writer = new XmlSerializer(typeof(List<SysRoles>));
-            //var wfile = new StreamWriter(path);
-            //writer.Serialize(wfile, sysRoles);
-            //wfile.Close();
-
-            //从文件反序列化
             XmlSerializer reader = new XmlSerializer(typeof(List<SysRoles>));
             StreamReader file = new StreamReader(path);
-            sysRoles = (List<SysRoles>)reader.Deserialize(file);
+            sysRoles = ((List<SysRoles>)reader.Deserialize(file));
             file.Close();
+        }
+
+        /// <summary>
+        /// 对应类型的角色
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static List<SysRoles> getRolesList(SysRolesType t) {
+            return sysRoles.Where(p => p.cat == t.GetHashCode()).ToList();
         }
 
 
@@ -55,6 +55,12 @@ namespace NewCyclone.Models
         /// 角色
         /// </summary>
         public string role { get; set; }
+
+        /// <summary>
+        /// 角色类型
+        /// </summary>
+        public int cat { get; set; }
+
         /// <summary>
         /// 角色名
         /// </summary>
@@ -325,6 +331,8 @@ namespace NewCyclone.Models
                 if (d == null) {
                     throw new SysException("用户名或密码不正确", condtion);
                 }
+                d.lastLoginTime = DateTime.Now;
+                db.SaveChanges();
                 setUserInfo(d);
                 return this;
             }

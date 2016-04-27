@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/26/2016 19:29:09
--- Generated from EDMX file: E:\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 04/27/2016 15:50:31
+-- Generated from EDMX file: D:\project\git\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -29,14 +29,14 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysUserLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_SysUserSysUserLog]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserSysUserLog];
-GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet];
+GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet];
 GO
@@ -92,6 +92,16 @@ CREATE TABLE [dbo].[Db_SysTreeSet] (
 );
 GO
 
+-- Creating table 'Db_SysDocSet'
+CREATE TABLE [dbo].[Db_SysDocSet] (
+    [Id] varchar(50)  NOT NULL,
+    [createdOn] datetime  NOT NULL,
+    [modifiedOn] datetime  NOT NULL,
+    [isDeleted] bit  NOT NULL,
+    [caption] nvarchar(max)  NOT NULL
+);
+GO
+
 -- Creating table 'Db_SysUserSet_Db_ManagerUser'
 CREATE TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] (
     [fullName] nvarchar(50)  NOT NULL,
@@ -128,6 +138,15 @@ CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] (
 );
 GO
 
+-- Creating table 'Db_SysDocSet_Db_DocImgRote'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_DocImgRote] (
+    [width] nvarchar(max)  NOT NULL,
+    [height] nvarchar(max)  NOT NULL,
+    [second] nvarchar(max)  NOT NULL,
+    [Id] varchar(50)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -147,6 +166,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_SysTreeSet'
 ALTER TABLE [dbo].[Db_SysTreeSet]
 ADD CONSTRAINT [PK_Db_SysTreeSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysDocSet'
+ALTER TABLE [dbo].[Db_SysDocSet]
+ADD CONSTRAINT [PK_Db_SysDocSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -171,6 +196,12 @@ GO
 -- Creating primary key on [Id] in table 'Db_SysMsgSet_Db_SysUserLog'
 ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
 ADD CONSTRAINT [PK_Db_SysMsgSet_Db_SysUserLog]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_DocImgRote'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_DocImgRote]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_DocImgRote]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -210,6 +241,15 @@ ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog]
 ADD CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_SysMsgSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_DocImgRote'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_DocImgRote]
+ADD CONSTRAINT [FK_Db_DocImgRote_inherits_Db_SysDoc]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysDocSet]
         ([Id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO

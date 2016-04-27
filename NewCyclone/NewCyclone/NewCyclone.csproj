@@ -494,15 +494,25 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ApiSysUserController.cs" />
+    <Compile Include="Controllers\ApiTestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
+    <Compile Include="DataBase\Db_DocImgRote.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\Db_ManagerUser.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_MemberUser.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="DataBase\Db_SysDoc.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="DataBase\Db_SysExceptionLog.cs">
+      <DependentUpon>SysModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DataBase\Db_SysFile.cs">
       <DependentUpon>SysModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataBase\Db_SysMsg.cs">
@@ -536,6 +546,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\SysBase.cs" />
+    <Compile Include="Models\SysDoc.cs" />
     <Compile Include="Models\SysException.cs" />
     <Compile Include="Models\SysMenu.cs" />
     <Compile Include="Models\SysTree.cs" />
