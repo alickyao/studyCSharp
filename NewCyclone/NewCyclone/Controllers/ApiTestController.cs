@@ -16,10 +16,12 @@ namespace NewCyclone.Controllers
         /// <summary>
         /// 测试
         /// </summary>
+        [Authorize(Roles ="admin")]
         [HttpGet]
-        public void test()
+        public BaseResponse test()
         {
-            
+            BaseResponse r = new BaseResponse();
+            return r;
         }
     }
 }

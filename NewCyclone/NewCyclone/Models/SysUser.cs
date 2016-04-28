@@ -75,7 +75,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 基类用户
     /// </summary>
-    public abstract class SysUser
+    public class SysUser
     {
         /// <summary>
         /// 登录名（ID）
@@ -105,6 +105,22 @@ namespace NewCyclone.Models
         public bool isDisabled { get; set; }
 
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected SysUser() {
+
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="loginname"></param>
+        public SysUser(string loginname) {
+            getInfo(loginname);
+        }
+
         /// <summary>
         /// 删除用户
         /// </summary>
@@ -118,20 +134,39 @@ namespace NewCyclone.Models
             }
         }
 
+        private void setUserInfo(Db_SysUser d) {
+            this.loginName = d.loginName;
+            this.lastLoginTime = d.lastLoginTime;
+            this.isDisabled = d.isDisabled;
+            this.role = d.role;
+            this.createdOn = d.createdOn;
+        }
+
         /// <summary>
         /// 获取用户信息
         /// </summary>
-        public abstract void getInfo();
+        public virtual void getInfo() {
+            throw new NotImplementedException();
+        }
+        
         /// <summary>
         /// 获取用户信息
         /// </summary>
         /// <param name="loginname"></param>
-        public abstract void getInfo(string loginname);
+        public virtual void getInfo(string loginname) {
+            using (var db = new SysModelContainer())
+            {
+                var d = db.Db_SysUserSet.Single(p => p.loginName == loginname);
+                setUserInfo(d);
+            }
+        }
 
         /// <summary>
         /// 保存用户信息
         /// </summary>
-        public abstract void saveInfo();
+        public virtual void saveInfo() {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -265,7 +300,7 @@ namespace NewCyclone.Models
                 db.SaveChanges();
             }
             getInfo(condtion.loginname);
-            saveLog(condtion, SysUserLogType.注册);
+            SysUserLog.saveLog(condtion, SysUserLogType.注册, this.loginName);
             return this;
         }
 
@@ -316,48 +351,6 @@ namespace NewCyclone.Models
         #endregion
 
 
-        /// <summary>
-        /// 保存系统用户日志
-        /// </summary>
-        /// <param name="condtion">需要保存的参数</param>
-        /// <param name="t">类型</param>
-        /// <param name="fkId">关联的ID</param>
-        public void saveLog(ItoSysLogMesable condtion, SysUserLogType t,string fkId = null) {
-            if (string.IsNullOrEmpty(this.loginName)) {
-                throw new SysException("系统日志未能保存，请先使用带参数的构造器或getInfo方法");
-            }
-            saveLog(condtion.toLogString(), t, fkId);
-        }
-
-
-        /// <summary>
-        /// 保存系统用户日志
-        /// </summary>
-        /// <param name="message">需要保存的日志文本</param>
-        /// <param name="t">类型</param>
-        /// <param name="fkId">关联的ID</param>
-        public void saveLog(string message, SysUserLogType t, string fkId = null) {
-            if (string.IsNullOrEmpty(this.loginName))
-            {
-                throw new SysException("系统日志未能保存，请先使用带参数的构造器或getInfo方法");
-            }
-            using (var db = new SysModelContainer())
-            {
-                Db_SysUserLog log = new Db_SysUserLog()
-                {
-                    createdOn = DateTime.Now,
-                    Db_SysUser_loginName = this.loginName,
-                    fkId = fkId,
-                    logType = t.GetHashCode(),
-                    msgType = SysMessageType.日志.GetHashCode(),
-                    message = message
-                };
-                db.Db_SysMsgSet.Add(log);
-                db.SaveChanges();
-            }
-        }
-
-
         #region -- 登陆
 
         /// <summary>
@@ -378,7 +371,7 @@ namespace NewCyclone.Models
                 d.lastLoginTime = DateTime.Now;
                 db.SaveChanges();
                 setUserInfo(d);
-                saveLog(condtion, SysUserLogType.登陆);
+                SysUserLog.saveLog(condtion, SysUserLogType.登陆);
                 return this;
             }
         }
@@ -466,7 +459,7 @@ namespace NewCyclone.Models
         public string toLogString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(this.ip).Append(",").Append(this.device);
+            sb.Append("用户登录,").Append(this.ip).Append(",").Append(this.device);
             return sb.ToString();
         }
     }

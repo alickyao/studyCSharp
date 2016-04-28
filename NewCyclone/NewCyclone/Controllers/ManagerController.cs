@@ -16,6 +16,7 @@ namespace NewCyclone.Controllers
         /// 后台登录
         /// </summary>
         /// <returns></returns>
+        
         public ActionResult login() {
             return View();
         }
@@ -24,7 +25,7 @@ namespace NewCyclone.Controllers
         /// 后台主页
         /// </summary>
         /// <returns></returns>
-        // GET: Manager
+        [Authorize(Roles = "admin,user")]
         public ActionResult index()
         {
             SysManagerUser mu = new SysManagerUser();
@@ -37,6 +38,7 @@ namespace NewCyclone.Controllers
         /// 工作台
         /// </summary>
         /// <returns></returns>
+        [Authorize(Roles = "admin,user")]
         public ActionResult workTab() {
             return View();
         }

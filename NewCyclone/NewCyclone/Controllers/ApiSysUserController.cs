@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using NewCyclone.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Security;
 
 namespace NewCyclone.Controllers
 {
@@ -22,6 +23,7 @@ namespace NewCyclone.Controllers
         /// <param name="t">角色的类型</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize]
         public List<SysRoles> getRolsList(SysRolesType t) {
             return SysRoles.getRolesList(t);
         }
@@ -37,6 +39,7 @@ namespace NewCyclone.Controllers
             {
                 SysManagerUser smu = new SysManagerUser();
                 result.result = smu.checkLogin(condtion);
+                FormsAuthentication.SetAuthCookie(result.result.loginName, true);
             }
             catch (SysException ex)
             {
@@ -53,6 +56,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
+        [Authorize(Roles ="admin")]
         public BaseResponse<SysManagerUser> createUser(ViewModelUserRegisterRequest condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
             SysManagerUser smu = new SysManagerUser();
@@ -76,6 +80,7 @@ namespace NewCyclone.Controllers
         /// <param name="loginName">用户登录名</param>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public BaseResponse delete(string loginName)
         {
             BaseResponse res = new BaseResponse();
