@@ -57,6 +57,51 @@ namespace NewCyclone.Models
         public T result { get; set; }
     }
 
+
+    /// <summary>
+    /// 标准返回列表对象
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class BaseResponseList<T> {
+        /// <summary>
+        /// 存在的记录的总数
+        /// </summary>
+        public int total { get; set; }
+
+
+        private List<T> _rows = new List<T>();
+        /// <summary>
+        /// 行
+        /// </summary>
+        public List<T> rows {
+            get { return _rows; }
+            set { _rows = value; }
+        }
+    }
+
+    /// <summary>
+    /// 标准列表请求参数
+    /// </summary>
+    public class BaseRequest {
+        private int _page = 1;
+        /// <summary>
+        /// 调取的页码 默认1 
+        /// </summary>
+        public int page {
+            get { return _page; }
+            set { _page = value; }
+        }
+
+        private int _pageSize = 20;
+        /// <summary>
+        /// 每页的数量 默认 20
+        /// </summary>
+        public int pageSize {
+            get { return _pageSize; }
+            set { _pageSize = value; }
+        }
+    }
+
     /// <summary>
     /// 系统验证
     /// </summary>

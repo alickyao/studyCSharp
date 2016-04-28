@@ -396,6 +396,36 @@ namespace NewCyclone.Models
         {
             
         }
+
+        /// <summary>
+        /// 检索用户
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        internal static BaseResponseList<SysManagerUser> searchUserList(BaseRequest condtion)
+        {
+            BaseResponseList<SysManagerUser> res = new BaseResponseList<SysManagerUser>();
+            using (var db = new SysModelContainer()) {
+                res.total = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>() where !x.isDeleted select x.loginName).Count();
+                if (res.total > 0)
+                {
+                    res.rows = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>()
+                                where !x.isDeleted
+                                orderby x.createdOn descending
+                                select new SysManagerUser {
+                                    createdOn = x.createdOn,
+                                    fullName = x.fullName,
+                                    isDisabled = x.isDisabled,
+                                    jobTitle = x.jobTitle,
+                                    lastLoginTime = x.lastLoginTime,
+                                    loginName = x.loginName,
+                                    mobilePhone = x.mobilePhone,
+                                    role = x.role
+                                }).ToList();
+                }
+            }
+            return res;
+        }
     }
 
     /// <summary>

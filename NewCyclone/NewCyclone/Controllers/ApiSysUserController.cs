@@ -86,7 +86,25 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 删除用户
+        /// 检索用户
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles ="admin,user")]
+        public BaseResponse<BaseResponseList<SysManagerUser>> searchUserList(BaseRequest condtion) {
+            BaseResponse<BaseResponseList<SysManagerUser>> res = new BaseResponse<BaseResponseList<SysManagerUser>>();
+            try
+            {
+                res.result = SysManagerUser.searchUserList(condtion);
+            }
+            catch (Exception e) {
+                res = SysException.getResult(res, e, condtion);
+            }
+            return res;
+        }
+
+        /// <summary>
+        /// 删除后台用户
         /// </summary>
         /// <param name="loginName">用户登录名</param>
         /// <returns></returns>
