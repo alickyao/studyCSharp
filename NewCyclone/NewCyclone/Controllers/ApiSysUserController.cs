@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using NewCyclone.Models;
-using System.ComponentModel.DataAnnotations;
 using System.Web.Security;
 
 namespace NewCyclone.Controllers
@@ -33,11 +30,14 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
+        [HttpPost]
         public BaseResponse<SysManagerUser> login(ViewModelLoginReqeust condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
             try
             {
                 SysManagerUser smu = new SysManagerUser();
+                condtion.ip = HttpContext.Current.Request.UserHostAddress;
+
                 result.result = smu.checkLogin(condtion);
                 FormsAuthentication.SetAuthCookie(result.result.loginName, true);
             }
@@ -52,10 +52,21 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public BaseResponse logout() {
+            FormsAuthentication.SignOut();
+            return new BaseResponse();
+        }
+
+        /// <summary>
         /// 创建管理员
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
+        [HttpPost]
         [Authorize(Roles ="admin")]
         public BaseResponse<SysManagerUser> createUser(ViewModelUserRegisterRequest condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();

@@ -3,6 +3,7 @@
     ViewBag.Title = "index";
     Layout = "~/Views/Shared/EasyUiLayout.cshtml";
     string userMenu = JsonConvert.SerializeObject(ViewBag.userMenu);
+    SysManagerUser userinfo = ViewBag.userinfo;
 }
 
 <script>
@@ -72,6 +73,7 @@
                     data: userMenu[index].children
                 });
             });
+            $(".LeftMenuChange").first().click();
         }
 
 
@@ -98,7 +100,7 @@
                 </div>
             </div>
             <div class="easyui-panel" data-options="border:false" style="padding: 5px;">
-                Welcome：Someone&nbsp;[Role：somerole]
+                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true">Welcome：@(userinfo.fullName)&nbsp;[Role：@(userinfo.role)]</a>
                @{
                    int i = 0;
                    foreach (SysMenu m in ViewBag.userMenu)
@@ -108,7 +110,7 @@
                        }
                    }
                 <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="UserChangePwdBtn">修改密码</a>
-                <a href="LogOff" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
+                <a href="logout" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
             </div>
         </div>
     </div>

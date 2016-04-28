@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 using System.Web.Mvc;
 using NewCyclone.Models;
 
@@ -16,9 +17,19 @@ namespace NewCyclone.Controllers
         /// 后台登录
         /// </summary>
         /// <returns></returns>
-        
         public ActionResult login() {
             return View();
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        public ActionResult logout() {
+            if (User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+            }
+            return RedirectToAction("login");
         }
 
         /// <summary>
@@ -28,9 +39,9 @@ namespace NewCyclone.Controllers
         [Authorize(Roles = "admin,user")]
         public ActionResult index()
         {
-            SysManagerUser mu = new SysManagerUser();
-            mu.role = "admin";
+            SysManagerUser mu = new SysManagerUser(User.Identity.Name);
             ViewBag.userMenu = mu.getUserMenu();
+            ViewBag.userinfo = mu;
             return View();
         }
 
