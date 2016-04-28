@@ -83,6 +83,7 @@
             var $form = $(e.target);
             var d = $form.serializeObject();
             d.pwd = md5(d.pwd);
+            d.device = window.navigator.userAgent;
             console.log(d);
             var btn = $("#loginBtn");
             btn.button('loading');
@@ -94,9 +95,9 @@
                 }
                 else {
                     $form.find(".alert").text(json.msg).show();
-                    window.setTimeout(function () {
-                        $form.find(".alert").hide();
-                    }, 3000);
+                    //window.setTimeout(function () {
+                    //    $form.find(".alert").hide();
+                    //}, 3000);
                     btn.button("reset");
                 }
             });

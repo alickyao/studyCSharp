@@ -293,7 +293,7 @@ namespace NewCyclone.Models
                     jobTitle = condtion.jobTitle,
                     loginName = condtion.loginname,
                     mobilePhone = condtion.mobilePhone,
-                    passWord = "abc",
+                    passWord = "e10adc3949ba59abbe56e057f20f883e",
                     role = condtion.role
                 };
                 db.Db_SysUserSet.Add(dbuser);
@@ -364,6 +364,17 @@ namespace NewCyclone.Models
                 throw new SysException(r.msg, condtion);
             }
             using (var db = new SysModelContainer()) {
+
+                //如果还没有用户则需要初始化一个第一个管理员
+                int c = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>() select x.loginName).Count();
+                if (c == 0) {
+                    create(new ViewModelUserRegisterRequest() {
+                        fullName = "管理员",
+                        loginname = "admin",
+                        role = "admin"
+                    });
+                }
+
                 var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().SingleOrDefault(p => p.loginName.Equals(condtion.loginName) && p.passWord.ToLower().Equals(condtion.pwd.ToLower()) && !p.isDeleted && !p.isDisabled);
                 if (d == null) {
                     throw new SysException("用户名或密码不正确", condtion);
