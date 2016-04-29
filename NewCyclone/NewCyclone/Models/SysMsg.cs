@@ -102,7 +102,9 @@ namespace NewCyclone.Models
                     fkId = fkId,
                     logType = t.GetHashCode(),
                     msgType = SysMessageType.日志.GetHashCode(),
-                    message = message
+                    message = message,
+                    ip = HttpContext.Current.Request.UserHostAddress,
+                    device =HttpContext.Current.Request.UserAgent
                 };
                 db.Db_SysMsgSet.Add(log);
                 db.SaveChanges();

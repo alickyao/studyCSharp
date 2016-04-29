@@ -17,5 +17,7 @@ namespace NewCyclone.DataBase
         public string Db_SysUser_loginName { get; set; }
         public int logType { get; set; }
         public string fkId { get; set; }
+        public string ip { get; set; }
+        public string device { get; set; }
     }
 }

@@ -36,8 +36,6 @@ namespace NewCyclone.Controllers
             try
             {
                 SysManagerUser smu = new SysManagerUser();
-                condtion.ip = HttpContext.Current.Request.UserHostAddress;
-
                 result.result = smu.checkLogin(condtion);
                 FormsAuthentication.SetAuthCookie(result.result.loginName, true);
             }
@@ -62,7 +60,51 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 创建管理员
+        /// 重设用户的密码
+        /// </summary>
+        /// <param name="loginName">用户的登录名</param>
+        /// <returns></returns>
+        [Authorize(Roles ="admin")]
+        [HttpGet]
+        public BaseResponse reSetPwd(string loginName) {
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                SysManagerUser user = new SysManagerUser(loginName);
+                user.reSetPwd();
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, loginName);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 修改新的登录密码
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin,user")]
+        [HttpPost]
+        public BaseResponse reSetNewPwd(ViewModelChangePwdRequest condtion) {
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                SysManagerUser user = new SysManagerUser(User.Identity.Name);
+                user.reSetNewPwd(condtion);
+            }
+            catch (SysException ex) {
+                result = ex.getresult(result, true);
+            }
+            catch (Exception e)
+            {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 创建后台人员
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
@@ -86,12 +128,29 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
+        /// 编辑后台用户信息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = "admin,user")]
+        public BaseResponse editUser(ViewModelUserEditReqeust condtion) {
+            if (!User.IsInRole("admin")) {
+                condtion.loginname = User.Identity.Name;
+            }
+            BaseResponse result = new BaseResponse();
+            SysManagerUser smu = new SysManagerUser();
+            smu.reSetUserInfo(condtion);
+            return result;
+        }
+
+        /// <summary>
         /// 检索用户
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles ="admin,user")]
-        public BaseResponse<BaseResponseList<SysManagerUser>> searchUserList(BaseRequest condtion) {
+        public BaseResponse<BaseResponseList<SysManagerUser>> searchUserList(ViewModelSearchUserBaseRequest condtion) {
             BaseResponse<BaseResponseList<SysManagerUser>> res = new BaseResponse<BaseResponseList<SysManagerUser>>();
             try
             {

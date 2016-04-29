@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Linq.SqlClient;
 using System.Web;
 using System.IO;
 using NewCyclone.DataBase;
@@ -78,6 +79,11 @@ namespace NewCyclone.Models
     public class SysUser
     {
         /// <summary>
+        /// 初始密码
+        /// </summary>
+        protected static string defaultPwd= System.Configuration.ConfigurationManager.AppSettings["defaultPwd"].ToString();
+
+        /// <summary>
         /// 登录名（ID）
         /// </summary>
         public string loginName { get; set; }
@@ -122,6 +128,44 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
+        /// 设置一个新密码
+        /// </summary>
+        public void reSetNewPwd(ViewModelChangePwdRequest condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.Single(p => p.loginName.Equals(this.loginName));
+                if (d.passWord.ToLower().Equals(condtion.oldPwd.ToLower()))
+                {
+                    changePwd(condtion.newPwd);
+                    SysUserLog.saveLog("用户设置了新的密码", SysUserLogType.编辑);
+                }
+                else {
+                    throw new SysException("旧密码不密码不正确", condtion);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重置为系统设定的初始密码
+        /// </summary>
+        public void reSetPwd() {
+            changePwd(defaultPwd);
+            SysUserLog.saveLog("重置用户的密码", SysUserLogType.编辑, this.loginName);
+        }
+
+        /// <summary>
+        /// 在数据库中修改密码
+        /// </summary>
+        protected void changePwd(string pwd) {
+            using(var db = new SysModelContainer())
+            {
+                var d = db.Db_SysUserSet.Single(p => p.loginName.Equals(this.loginName));
+                d.passWord = pwd;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// 删除用户
         /// </summary>
         /// <returns>返回被删除的用户对象</returns>
@@ -131,10 +175,15 @@ namespace NewCyclone.Models
                 var d = db.Db_SysUserSet.Single(p => p.loginName == loginName);
                 d.isDeleted = true;
                 db.SaveChanges();
+                SysUserLog.saveLog("删除用户:" + this.ToString(), SysUserLogType.编辑, this.loginName);
             }
         }
 
-        private void setUserInfo(Db_SysUser d) {
+        /// <summary>
+        /// 设置用户的信息
+        /// </summary>
+        /// <param name="d"></param>
+        protected void setUserInfo(Db_SysUser d) {
             this.loginName = d.loginName;
             this.lastLoginTime = d.lastLoginTime;
             this.isDisabled = d.isDisabled;
@@ -162,11 +211,29 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
-        /// 保存用户信息
+        /// 比较是否为同一个用户
         /// </summary>
-        public virtual void saveInfo() {
-            throw new NotImplementedException();
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            if (typeof(SysUser).IsAssignableFrom(obj.GetType()))
+            {
+                SysUser s = (SysUser)obj;
+                return s.loginName.Equals(this.loginName);
+            }
+            return base.Equals(obj);
         }
+
+        /// <summary>
+        /// GetHashCode
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return this.loginName.GetHashCode();
+        }
+
     }
 
     /// <summary>
@@ -271,15 +338,12 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
-        /// 注册新的用户
+        /// 创建新的用户
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
         public SysManagerUser create(ViewModelUserRegisterRequest condtion) {
-            var v = SysValidata.valiData(condtion);
-            if (v.code == BaseResponseCode.异常) {
-                throw new SysException(v.msg, condtion);
-            }
+            SysValidata.valiData(condtion);
             int c = getLoginNameCount(condtion.loginname);
             if (c > 0) {
                 throw new SysException("登录名已存在", condtion);
@@ -293,7 +357,7 @@ namespace NewCyclone.Models
                     jobTitle = condtion.jobTitle,
                     loginName = condtion.loginname,
                     mobilePhone = condtion.mobilePhone,
-                    passWord = "e10adc3949ba59abbe56e057f20f883e",
+                    passWord = defaultPwd,
                     role = condtion.role
                 };
                 db.Db_SysUserSet.Add(dbuser);
@@ -338,14 +402,10 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="d"></param>
         private void setUserInfo(Db_ManagerUser d) {
-            this.loginName = d.loginName;
             this.fullName = d.fullName;
             this.jobTitle = d.jobTitle;
             this.mobilePhone = d.mobilePhone;
-            this.lastLoginTime = d.lastLoginTime;
-            this.role = d.role;
-            this.isDisabled = d.isDisabled;
-            this.createdOn = d.createdOn;
+            base.setUserInfo(d);
         }
 
         #endregion
@@ -359,10 +419,7 @@ namespace NewCyclone.Models
         /// <param name="condtion"></param>
         /// <returns></returns>
         public SysManagerUser checkLogin(ViewModelLoginReqeust condtion) {
-            var r = SysValidata.valiData(condtion);
-            if (r.code == BaseResponseCode.异常) {
-                throw new SysException(r.msg, condtion);
-            }
+            SysValidata.valiData(condtion);
             using (var db = new SysModelContainer()) {
 
                 //如果还没有用户则需要初始化一个第一个管理员
@@ -382,7 +439,7 @@ namespace NewCyclone.Models
                 d.lastLoginTime = DateTime.Now;
                 db.SaveChanges();
                 setUserInfo(d);
-                SysUserLog.saveLog(condtion, SysUserLogType.登陆);
+                SysUserLog.saveLog("用户登录", SysUserLogType.登陆);
                 return this;
             }
         }
@@ -390,11 +447,20 @@ namespace NewCyclone.Models
         #endregion
 
         /// <summary>
-        /// 保存用户信息
+        /// 修改后台用户的信息
         /// </summary>
-        public override void saveInfo()
-        {
-            
+        /// <param name="condtion"></param>
+        public void reSetUserInfo(ViewModelUserEditReqeust condtion) {
+            SysValidata.valiData(condtion);
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName.Equals(condtion.loginname));
+                d.fullName = condtion.fullName;
+                d.jobTitle = condtion.jobTitle;
+                d.mobilePhone = condtion.mobilePhone;
+                d.role = condtion.role;
+                db.SaveChanges();
+            }
+            SysUserLog.saveLog(condtion, SysUserLogType.编辑, condtion.loginname);
         }
 
         /// <summary>
@@ -402,45 +468,60 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        internal static BaseResponseList<SysManagerUser> searchUserList(BaseRequest condtion)
+        internal static BaseResponseList<SysManagerUser> searchUserList(ViewModelSearchUserBaseRequest condtion)
         {
             BaseResponseList<SysManagerUser> res = new BaseResponseList<SysManagerUser>();
             using (var db = new SysModelContainer()) {
-                res.total = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>() where !x.isDeleted select x.loginName).Count();
+                res.total = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
+                             where !x.isDeleted
+                             && (condtion.roles.Count==0?true:condtion.roles.Contains(x.role))
+                             && (condtion.loginName.Count==0?true:condtion.loginName.Contains(x.loginName))
+                             && (string.IsNullOrEmpty(condtion.keywords)? true : SqlMethods.Like(x.loginName,string.Format("%{0}%",condtion.keywords)) || SqlMethods.Like(x.fullName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.mobilePhone, string.Format("%{0}%", condtion.keywords)))
+                             select x.loginName).Count();
                 if (res.total > 0)
                 {
-                    res.rows = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>()
+                    if (condtion.loginName.Count > 0) {
+                        condtion.pageSize = res.total;
+                    }
+                    res.rows = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
                                 where !x.isDeleted
+                                && (condtion.roles.Count == 0 ? true : condtion.roles.Contains(x.role))
+                                && (condtion.loginName.Count == 0 ? true : condtion.loginName.Contains(x.loginName))
+                                && (string.IsNullOrEmpty(condtion.keywords) ? true : SqlMethods.Like(x.loginName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.fullName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.mobilePhone, string.Format("%{0}%", condtion.keywords)))
                                 orderby x.createdOn descending
-                                select new SysManagerUser {
-                                    createdOn = x.createdOn,
-                                    fullName = x.fullName,
-                                    isDisabled = x.isDisabled,
-                                    jobTitle = x.jobTitle,
-                                    lastLoginTime = x.lastLoginTime,
-                                    loginName = x.loginName,
-                                    mobilePhone = x.mobilePhone,
-                                    role = x.role
-                                }).ToList();
+                                select new SysManagerUser(x.loginName) {
+                                }).Skip(condtion.getSkip()).Take(condtion.pageSize).ToList();
                 }
             }
             return res;
         }
+
+        /// <summary>
+        /// 格式化用户信息  姓名[角色]
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(this.fullName).Append("[").Append(this.role).Append("]");
+            return sb.ToString();
+        }
     }
 
     /// <summary>
-    /// 新增管理员请求参数
+    /// 编辑后台用户请求
     /// </summary>
-    public class ViewModelUserRegisterRequest:ItoSysLogMesable {
+    public class ViewModelUserEditReqeust : ItoSysLogMesable
+    {
         /// <summary>
         /// 登录名
         /// </summary>
-        [Required(AllowEmptyStrings =false,ErrorMessage ="登录名必填")]
-        [StringLength(50,MinimumLength =5,ErrorMessage ="登录名至少需要5个字符")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "登录名必填")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "登录名至少需要5个字符")]
         public string loginname { get; set; }
 
         /// <summary>
-        /// 角色（可选admin,user）
+        /// 角色
         /// </summary>
         [Required(AllowEmptyStrings = false, ErrorMessage = "角色信息必填")]
         public string role { get; set; }
@@ -448,8 +529,8 @@ namespace NewCyclone.Models
         /// <summary>
         /// 姓名
         /// </summary>
-        [Required(AllowEmptyStrings = false,ErrorMessage ="请填写姓名")]
-        [MaxLength(50)]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请填写姓名")]
+        [StringLength(50)]
         public string fullName;
         /// <summary>
         /// 手机号
@@ -457,15 +538,29 @@ namespace NewCyclone.Models
         [Required(AllowEmptyStrings = true)]
         [Phone(ErrorMessage = "电话号码格式不正确")]
         public string mobilePhone;
+
         /// <summary>
         /// 职位
         /// </summary>
         public string jobTitle;
 
-        public string toLogString()
+        public virtual string toLogString()
         {
             StringBuilder s = new StringBuilder();
-            s.Append("添加新用户").Append(this.loginname).Append("[" + this.fullName + "]");
+            s.Append("编辑用户信息:").AppendFormat("{0},[{1}],[{2}]", this.fullName, this.role, this.mobilePhone);
+            return s.ToString();
+        }
+    }
+
+    /// <summary>
+    /// 新增后台用户请求参数
+    /// </summary>
+    public class ViewModelUserRegisterRequest:ViewModelUserEditReqeust {
+        
+        public override string toLogString()
+        {
+            StringBuilder s = new StringBuilder();
+            s.Append("添加新用户:").Append(this.loginname).Append("[" + this.fullName + "]");
             return s.ToString();
         }
     }
@@ -473,7 +568,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 用户登录请求
     /// </summary>
-    public class ViewModelLoginReqeust: ItoSysLogMesable
+    public class ViewModelLoginReqeust
     {
         /// <summary>
         /// 登录名
@@ -487,21 +582,54 @@ namespace NewCyclone.Models
         [Required(ErrorMessage = "请输入密码")]
         public string pwd { get; set; }
 
-        /// <summary>
-        /// 登陆时的IP地址
-        /// </summary>
-        public string ip { get; set; }
+    }
+
+    /// <summary>
+    /// 检索用户请求
+    /// </summary>
+    public class ViewModelSearchUserBaseRequest :BaseRequest{
+
+        private List<string> _loginName = new List<string>();
 
         /// <summary>
-        /// 登陆设备信息
+        /// 登录名
         /// </summary>
-        public string device { get; set; }
-
-        public string toLogString()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("用户登录,").Append(this.ip).Append(",").Append(this.device);
-            return sb.ToString();
+        public List<string> loginName {
+            get { return _loginName; }
+            set { _loginName = value; }
         }
+
+        private List<string> _roles = new List<string>();
+
+        /// <summary>
+        /// 角色
+        /// </summary>
+        public List<string> roles {
+            get { return _roles; }
+            set { _roles = value; }
+        }
+
+        /// <summary>
+        /// 关键字：姓名，电话，登录名
+        /// </summary>
+        public string keywords { get; set; }
+    }
+
+    /// <summary>
+    /// 修改密码请求
+    /// </summary>
+    public class ViewModelChangePwdRequest {
+        /// <summary>
+        /// 旧密码
+        /// </summary>
+        [Required]
+        [StringLength(32,MinimumLength =32,ErrorMessage ="旧密码需要md5 32为加密")]
+        public string oldPwd { get; set; }
+        /// <summary>
+        /// 新密码
+        /// </summary>
+        [Required]
+        [StringLength(32, MinimumLength = 32, ErrorMessage = "新密码需要md5 32为加密")]
+        public string newPwd { get; set; }
     }
 }

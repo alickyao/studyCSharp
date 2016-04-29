@@ -100,6 +100,13 @@ namespace NewCyclone.Models
             get { return _pageSize; }
             set { _pageSize = value; }
         }
+        /// <summary>
+        /// 根据页码获取需要跳过的行的数量
+        /// </summary>
+        /// <returns></returns>
+        public int getSkip() {
+            return (this.page - 1) * this.pageSize;
+        }
     }
 
     /// <summary>
@@ -109,9 +116,10 @@ namespace NewCyclone.Models
         /// <summary>
         /// 参数验证
         /// </summary>
-        /// <param name="condtion"></param>
+        /// <param name="condtion">参数</param>
+        /// <param name="throwException">是否直接抛出异常，默认为true</param>
         /// <returns></returns>
-        public static BaseResponse<List<ValidationResult>> valiData(object condtion) {
+        public static BaseResponse<List<ValidationResult>> valiData(object condtion,bool throwException = true) {
             BaseResponse<List<ValidationResult>> result = new BaseResponse<List<ValidationResult>>();
 
             var context = new ValidationContext(condtion, null, null);
@@ -122,6 +130,10 @@ namespace NewCyclone.Models
             result.result = results;
 
             if (results != null && results.Count > 0) {
+                if (throwException)
+                {
+                    throw new SysException(results[0].ErrorMessage, condtion);
+                }
                 result.code = BaseResponseCode.异常;
                 result.msg = results[0].ErrorMessage;
             }
