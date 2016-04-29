@@ -450,17 +450,19 @@ namespace NewCyclone.Models
         /// 修改后台用户的信息
         /// </summary>
         /// <param name="condtion"></param>
-        public void reSetUserInfo(ViewModelUserEditReqeust condtion) {
+        public SysManagerUser saveInfo(ViewModelUserEditReqeust condtion) {
             SysValidata.valiData(condtion);
             using (var db = new SysModelContainer()) {
-                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName.Equals(condtion.loginname));
+                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName.Equals(this.loginName));
                 d.fullName = condtion.fullName;
                 d.jobTitle = condtion.jobTitle;
                 d.mobilePhone = condtion.mobilePhone;
                 d.role = condtion.role;
                 db.SaveChanges();
             }
-            SysUserLog.saveLog(condtion, SysUserLogType.编辑, condtion.loginname);
+            SysUserLog.saveLog(condtion, SysUserLogType.编辑, this.loginName);
+            getInfo();
+            return this;
         }
 
         /// <summary>
@@ -513,12 +515,7 @@ namespace NewCyclone.Models
     /// </summary>
     public class ViewModelUserEditReqeust : ItoSysLogMesable
     {
-        /// <summary>
-        /// 登录名
-        /// </summary>
-        [Required(AllowEmptyStrings = false, ErrorMessage = "登录名必填")]
-        [StringLength(50, MinimumLength = 5, ErrorMessage = "登录名至少需要5个字符")]
-        public string loginname { get; set; }
+        
 
         /// <summary>
         /// 角色
@@ -556,7 +553,14 @@ namespace NewCyclone.Models
     /// 新增后台用户请求参数
     /// </summary>
     public class ViewModelUserRegisterRequest:ViewModelUserEditReqeust {
-        
+
+        /// <summary>
+        /// 登录名
+        /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "登录名必填")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "登录名至少需要5个字符")]
+        public string loginname { get; set; }
+
         public override string toLogString()
         {
             StringBuilder s = new StringBuilder();

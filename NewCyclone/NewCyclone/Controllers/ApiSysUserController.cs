@@ -130,17 +130,18 @@ namespace NewCyclone.Controllers
         /// <summary>
         /// 编辑后台用户信息
         /// </summary>
-        /// <param name="condtion"></param>
+        /// <param name="loginName">被编辑的用户ID(登录名)</param>
+        /// <param name="condtion">请求</param>
         /// <returns></returns>
         [HttpPost]
         [Authorize(Roles = "admin,user")]
-        public BaseResponse editUser(ViewModelUserEditReqeust condtion) {
+        public BaseResponse<SysManagerUser> editUser(string loginName, ViewModelUserEditReqeust condtion) {
             if (!User.IsInRole("admin")) {
-                condtion.loginname = User.Identity.Name;
+                loginName = User.Identity.Name;
             }
-            BaseResponse result = new BaseResponse();
-            SysManagerUser smu = new SysManagerUser();
-            smu.reSetUserInfo(condtion);
+            BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
+            SysManagerUser smu = new SysManagerUser(loginName);
+            result.result = smu.saveInfo(condtion);
             return result;
         }
 
