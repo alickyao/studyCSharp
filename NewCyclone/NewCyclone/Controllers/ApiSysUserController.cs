@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Http;
 using NewCyclone.Models;
 using System.Web.Security;
+using System.Threading;
 
 namespace NewCyclone.Controllers
 {
@@ -25,6 +26,8 @@ namespace NewCyclone.Controllers
             return SysRoles.getRolesList(t);
         }
 
+        
+
         /// <summary>
         /// 验证并登陆
         /// </summary>
@@ -35,6 +38,7 @@ namespace NewCyclone.Controllers
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
             try
             {
+                Thread.Sleep(500);
                 SysManagerUser smu = new SysManagerUser();
                 result.result = smu.checkLogin(condtion);
                 FormsAuthentication.SetAuthCookie(result.result.loginName, true);
@@ -101,6 +105,19 @@ namespace NewCyclone.Controllers
                 result = SysException.getResult(result, e, condtion);
             }
             return result;
+        }
+
+
+        /// <summary>
+        /// 检查登录名出现的次数
+        /// </summary>
+        /// <param name="loginName"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin,user")]
+        [HttpGet]
+        public int checkLoginName(string loginName)
+        {
+            return SysManagerUser.getLoginNameCount(loginName);
         }
 
         /// <summary>

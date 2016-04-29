@@ -331,7 +331,7 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="lgname"></param>
         /// <returns></returns>
-        private int getLoginNameCount(string lgname) {
+        public static int getLoginNameCount(string lgname) {
             using (var db = new SysModelContainer()) {
                 return (from c in db.Db_SysUserSet where c.loginName.Equals(lgname) select c.loginName).Count();
             }
