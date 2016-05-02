@@ -24,9 +24,7 @@ namespace NewCyclone.Controllers
         [Authorize]
         public List<SysRoles> getRolsList(SysRolesType t) {
             return SysRoles.getRolesList(t);
-        }
-
-        
+        } 
 
         /// <summary>
         /// 验证并登陆
@@ -39,8 +37,7 @@ namespace NewCyclone.Controllers
             try
             {
                 Thread.Sleep(500);
-                SysManagerUser smu = new SysManagerUser();
-                result.result = smu.checkLogin(condtion);
+                result.result = SysManagerUser.checkLogin(condtion);
                 FormsAuthentication.SetAuthCookie(result.result.loginName, true);
             }
             catch (SysException ex)
@@ -88,7 +85,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        [Authorize(Roles = "admin,user")]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         [HttpPost]
         public BaseResponse reSetNewPwd(ViewModelChangePwdRequest condtion) {
             BaseResponse result = new BaseResponse();
@@ -113,7 +110,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="loginName"></param>
         /// <returns></returns>
-        [Authorize(Roles = "admin,user")]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         [HttpGet]
         public int checkLoginName(string loginName)
         {
@@ -129,10 +126,9 @@ namespace NewCyclone.Controllers
         [Authorize(Roles ="admin")]
         public BaseResponse<SysManagerUser> createUser(ViewModelUserRegisterRequest condtion) {
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
-            SysManagerUser smu = new SysManagerUser();
             try
             {
-                result.result = smu.create(condtion);
+                result.result = SysManagerUser.create(condtion);
             }
             catch (SysException r)
             {
@@ -151,14 +147,27 @@ namespace NewCyclone.Controllers
         /// <param name="condtion">请求</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "admin,user")]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<SysManagerUser> editUser(string loginName, ViewModelUserEditReqeust condtion) {
-            if (!User.IsInRole("admin")) {
-                loginName = User.Identity.Name;
-            }
             BaseResponse<SysManagerUser> result = new BaseResponse<SysManagerUser>();
-            SysManagerUser smu = new SysManagerUser(loginName);
-            result.result = smu.saveInfo(condtion);
+            try
+            {
+                if (!User.IsInRole("admin"))
+                {
+                    loginName = User.Identity.Name;
+                }
+
+                SysManagerUser smu = new SysManagerUser(loginName);
+                result.result = smu.saveInfo(condtion);
+            }
+            catch (SysException ex)
+            {
+                result =  ex.getresult(result, true);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            
             return result;
         }
 
@@ -167,7 +176,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles ="admin,user")]
+        [Authorize(Roles ="admin")]
         public BaseResponse<BaseResponseList<SysManagerUser>> searchUserList(ViewModelSearchUserBaseRequest condtion) {
             BaseResponse<BaseResponseList<SysManagerUser>> res = new BaseResponse<BaseResponseList<SysManagerUser>>();
             try

@@ -9,9 +9,36 @@ using NewCyclone.Models;
 namespace NewCyclone.Controllers
 {
     /// <summary>
-    /// 后台系统界面控制
+    /// 后台基础
     /// </summary>
-    public class ManagerController : Controller
+    public class MBaseController : Controller {
+        /// <summary>
+        /// 页面的ID
+        /// </summary>
+        public string pageId;
+        /// <summary>
+        /// 为页面ID赋值
+        /// </summary>
+        public MBaseController() {
+            pageId = SysHelp.getNewId("HHmmss");
+            ViewBag.pageId = pageId;
+        }
+
+        /// <summary>
+        /// 重新设置页面的PageId
+        /// </summary>
+        /// <param name="pId">重设的pageId</param>
+        public void setPageId(string pId = null) {
+            if (string.IsNullOrEmpty(pId)) {
+                this.pageId = pId;
+                ViewBag.pageId = pId;
+            }
+        }
+    }
+    /// <summary>
+    /// 后台系统界面控制登陆退出与主界面
+    /// </summary>
+    public class ManagerController : MBaseController
     {
         /// <summary>
         /// 后台登录
@@ -36,7 +63,7 @@ namespace NewCyclone.Controllers
         /// 后台主页
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "admin,user")]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult index()
         {
             SysManagerUser mu = new SysManagerUser(User.Identity.Name);
@@ -49,8 +76,48 @@ namespace NewCyclone.Controllers
         /// 工作台
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "admin,user")]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult workTab() {
+            return View();
+        }
+    }
+
+    /// <summary>
+    /// 后台用户相关
+    /// </summary>
+    public class ManagerUserController : MBaseController {
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult changepwd(string pageId = null)
+        {
+            setPageId(pageId);
+            return View();
+        }
+
+        /// <summary>
+        /// 用户信息导航
+        /// </summary>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult info(string pageId = null) {
+            setPageId(pageId);
+            return View();
+        }
+
+        /// <summary>
+        /// 编辑当前登陆人的信息
+        /// </summary>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult userInfo(string pageId = null) {
+            setPageId(pageId);
+
+            SysManagerUser user = new SysManagerUser(User.Identity.Name);
+            ViewBag.user = user;
             return View();
         }
     }

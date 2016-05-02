@@ -25,4 +25,23 @@
     }
         #MainTitle #TopNav #MainSearch {
             text-align:right;
+            margin-bottom:2px;
         }
+    #MainTitle #topMenulist {
+        padding: 5px; border:1px solid #dedede; border-bottom:none; border-right:none;
+        border-top-left-radius:3px;
+        background-color:#efefef
+    }
+
+.dialogwin {
+    padding:5px;
+}
+
+.formtable {
+    border-collapse:collapse;
+    border:1px dashed #ccc;
+}
+    .formtable td {
+        padding:5px;
+        border:1px dashed #ccc;
+    }

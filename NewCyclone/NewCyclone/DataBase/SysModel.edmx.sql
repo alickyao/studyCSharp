@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 04/29/2016 07:08:22
+-- Date Created: 04/29/2016 21:26:08
 -- Generated from EDMX file: E:\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
@@ -17,6 +17,9 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_Db_DocImgRote_inherits_Db_SysDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocImgRote] DROP CONSTRAINT [FK_Db_DocImgRote_inherits_Db_SysDoc];
+GO
 IF OBJECT_ID(N'[dbo].[FK_Db_ManagerUser_inherits_Db_SysUser]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysUserSet_Db_ManagerUser] DROP CONSTRAINT [FK_Db_ManagerUser_inherits_Db_SysUser];
 GO
@@ -29,34 +32,22 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_SysUserLog_inherits_Db_SysMsg]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] DROP CONSTRAINT [FK_Db_SysUserLog_inherits_Db_SysMsg];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_DocImgRote_inherits_Db_SysDoc]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocImgRote] DROP CONSTRAINT [FK_Db_DocImgRote_inherits_Db_SysDoc];
-GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysMsgSet];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysTreeSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysTreeSet];
-GO
 IF OBJECT_ID(N'[dbo].[Db_SysDocSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysDocSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocImgRote]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_DocImgRote];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysFileSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysFileSet];
 GO
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
-GO
-IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_MemberUser]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysUserSet_Db_MemberUser];
+IF OBJECT_ID(N'[dbo].[Db_SysMsgSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysMsgSet];
 GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysExceptionLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet_Db_SysExceptionLog];
@@ -64,8 +55,17 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_SysMsgSet_Db_SysUserLog]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog];
 GO
-IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocImgRote]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysDocSet_Db_DocImgRote];
+IF OBJECT_ID(N'[dbo].[Db_SysTreeSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysTreeSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_ManagerUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet_Db_ManagerUser];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysUserSet_Db_MemberUser]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysUserSet_Db_MemberUser];
 GO
 
 -- --------------------------------------------------
@@ -157,6 +157,8 @@ CREATE TABLE [dbo].[Db_SysMsgSet_Db_SysUserLog] (
     [Db_SysUser_loginName] nvarchar(50)  NOT NULL,
     [logType] int  NOT NULL,
     [fkId] nvarchar(50)  NULL,
+    [ip] varchar(50)  NULL,
+    [device] varchar(max)  NULL,
     [Id] bigint  NOT NULL
 );
 GO

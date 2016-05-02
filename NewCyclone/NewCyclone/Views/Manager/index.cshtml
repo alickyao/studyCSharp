@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/EasyUiLayout.cshtml";
     string userMenu = JsonConvert.SerializeObject(ViewBag.userMenu);
     SysManagerUser userinfo = ViewBag.userinfo;
+    string pageId = ViewBag.pageId;
 }
 
 <script>
@@ -36,7 +37,6 @@
 
         //用户菜单
         var userMenu = $.parseJSON('@Html.Raw(userMenu)');
-        console.log(userMenu);
         if (userMenu.length > 0) {
             //左侧菜单项目初始化
             $('#MainLeftTreeMenuList').tree({
@@ -84,10 +84,33 @@
             closable: false,
             iconCls: "icon-edit"
         });
+        //修改密码按钮
+        $("#@(pageId)UserChangePwdBtn").click(function () {
+            var dd = $("#@(pageId)changePwdWin");
+            dd.dialog({
+                title: "修改密码",
+                href: "/ManagerUser/changepwd"
+            });
+            dd.dialog("open");
+        });
+
+        $("#@(pageId)userInfoBtn").click(function () {
+            var dd = $("#@(pageId)userInfoWin");
+            dd.dialog({
+                title: "我的",
+                href: "/ManagerUser/info"
+            });
+            dd.dialog("open");
+        });
     });
 </script>
 
-<div data-options="region:'north',border:false" style="height: 60px;">
+<div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="对话框" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
+</div>
+<div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="对话框" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
+</div>
+
+<div data-options="region:'north',border:false" style="height: 63px;">
     <div id="MainTitle">
         <div id="TopLogo"></div>
         <div id="TopNav">
@@ -99,8 +122,8 @@
                     <div data-options="name:'Topic'">文档</div>
                 </div>
             </div>
-            <div class="easyui-panel" data-options="border:false" style="padding: 5px;">
-                <a href="javascript:void(0);" class="easyui-linkbutton" data-options="plain:true">Welcome：@(userinfo.fullName)&nbsp;[Role：@(userinfo.role)]</a>
+            <div class="easyui-panel" id="topMenulist" data-options="border:false">
+                <a href="javascript:void(0);" id="@(pageId)userInfoBtn" class="easyui-linkbutton" data-options="plain:true">您好：@(userinfo.fullName)&nbsp;[角色：@(userinfo.roleInfo.name)]</a>
                @{
                    int i = 0;
                    foreach (SysMenu m in ViewBag.userMenu)
@@ -109,7 +132,7 @@
                            i++;
                        }
                    }
-                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="UserChangePwdBtn">修改密码</a>
+                <a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-lock'" id="@(pageId)UserChangePwdBtn">修改密码</a>
                 <a href="logout" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-back'">退出登录</a>
             </div>
         </div>

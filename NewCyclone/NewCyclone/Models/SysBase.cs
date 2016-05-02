@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Http.Controllers;
 
 namespace NewCyclone.Models
 {
@@ -138,6 +140,82 @@ namespace NewCyclone.Models
                 result.msg = results[0].ErrorMessage;
             }
             return result;
+        }
+    }
+
+    /// <summary>
+    /// 扩展的系统角色验证
+    /// </summary>
+    public class SysAuthorize : System.Web.Http.AuthorizeAttribute
+    {
+        /// <summary>
+        /// 角色类型，如果指定了特定的角色，该值无效
+        /// </summary>
+        public SysRolesType RoleType { get; set; }
+
+        /// <summary>
+        /// 如果有设置角色类型，则进行验证
+        /// </summary>
+        /// <param name="actionContext"></param>
+        /// <returns></returns>
+        protected override bool IsAuthorized(HttpActionContext actionContext)
+        {
+            if (HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                if (string.IsNullOrEmpty(this.Roles))
+                {
+                    List<SysRoles> roles = SysRoles.getRolesList(RoleType);
+                    foreach (SysRoles role in roles)
+                    {
+                        if (HttpContext.Current.User.IsInRole(role.role))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return base.IsAuthorized(actionContext);
+        }
+    }
+
+    /// <summary>
+    /// 常用的一些静态方法
+    /// </summary>
+    public class SysHelp {
+
+        private static char[] code = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
+
+        private static Random random = new Random();
+
+        /// <summary>
+        /// 获取随机字符串
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        private static string getrandmonstirng(int c = 4) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < c; i++) {
+                sb.Append(code[random.Next(26)]);
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 随机生成一个不重复的字符串ID
+        /// </summary>
+        /// <param name="arg">字符串ID中的时间格式，默认为yyMMddHHmmss</param>
+        /// <returns></returns>
+        public static string getNewId(string arg = null) {
+            if (string.IsNullOrEmpty(arg))
+            {
+                arg = "yyMMddHHmmss";
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            sb.Append(getrandmonstirng()).Append("_");
+            sb.Append(DateTime.Now.ToString(arg));
+            
+            return sb.ToString();
         }
     }
 }

@@ -17,9 +17,14 @@ namespace NewCyclone.Controllers
         /// 测试
         /// </summary>
         [HttpGet]
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<List<string>> test()
         {
             BaseResponse<List<string>> r = new BaseResponse<List<string>>();
+            r.result = new List<string>();
+            for (int i = 0; i < 100; i++) {
+                r.result.Add(SysHelp.getNewId("HHmmss"));
+            }
             return r;
         }
     }

@@ -20,7 +20,7 @@ namespace NewCyclone.Models
         /// </summary>
         后台,
         /// <summary>
-        /// 其他角色
+        /// 其他角色，会员，访客等
         /// </summary>
         其他
     }
@@ -71,6 +71,17 @@ namespace NewCyclone.Models
         /// 角色描述
         /// </summary>
         public string discribe { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0}[{1}]", this.name, this.role);
+            return sb.ToString();
+        }
     }
 
     /// <summary>
@@ -89,10 +100,14 @@ namespace NewCyclone.Models
         public string loginName { get; set; }
 
         /// <summary>
-        /// 角色用户的角色
+        /// 角色，用户的角色
         /// </summary>
         public string role { get; set; }
 
+        /// <summary>
+        /// 角色详情
+        /// </summary>
+        public SysRoles roleInfo { get; set; }
 
         /// <summary>
         /// 注册时间
@@ -109,15 +124,6 @@ namespace NewCyclone.Models
         /// 是否已经禁用
         /// </summary>
         public bool isDisabled { get; set; }
-
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected SysUser() {
-
-        }
 
         /// <summary>
         /// 构造函数
@@ -140,7 +146,7 @@ namespace NewCyclone.Models
                     SysUserLog.saveLog("用户设置了新的密码", SysUserLogType.编辑);
                 }
                 else {
-                    throw new SysException("旧密码不密码不正确", condtion);
+                    throw new SysException("旧密码不正确", condtion);
                 }
             }
         }
@@ -190,23 +196,18 @@ namespace NewCyclone.Models
             this.role = d.role;
             this.createdOn = d.createdOn;
         }
-
-        /// <summary>
-        /// 获取用户信息
-        /// </summary>
-        public virtual void getInfo() {
-            throw new NotImplementedException();
-        }
         
         /// <summary>
         /// 获取用户信息
         /// </summary>
         /// <param name="loginname"></param>
-        public virtual void getInfo(string loginname) {
+        protected virtual void getInfo(string loginname) {
             using (var db = new SysModelContainer())
             {
                 var d = db.Db_SysUserSet.Single(p => p.loginName == loginname);
                 setUserInfo(d);
+                //获取角色
+                this.roleInfo = SysRoles.sysRoles.Single(p => p.role.Equals(d.role));
             }
         }
 
@@ -256,17 +257,11 @@ namespace NewCyclone.Models
 
 
         /// <summary>
-        /// 构造方法
-        /// </summary>
-        public SysManagerUser() {
-
-        }
-
-        /// <summary>
-        /// 构造方法
+        /// 使用用户的ID获取详情
         /// </summary>
         /// <param name="loginname">登录名</param>
-        public SysManagerUser(string loginname) {
+        public SysManagerUser(string loginname) : base(loginname)
+        {
             getInfo(loginname);
         }
 
@@ -342,7 +337,7 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        public SysManagerUser create(ViewModelUserRegisterRequest condtion) {
+        public static SysManagerUser create(ViewModelUserRegisterRequest condtion) {
             SysValidata.valiData(condtion);
             int c = getLoginNameCount(condtion.loginname);
             if (c > 0) {
@@ -363,9 +358,9 @@ namespace NewCyclone.Models
                 db.Db_SysUserSet.Add(dbuser);
                 db.SaveChanges();
             }
-            getInfo(condtion.loginname);
-            SysUserLog.saveLog(condtion, SysUserLogType.注册, this.loginName);
-            return this;
+            SysManagerUser newuser = new SysManagerUser(condtion.loginname);
+            SysUserLog.saveLog(condtion, SysUserLogType.注册, newuser.loginName);
+            return newuser;
         }
 
         #endregion
@@ -376,24 +371,13 @@ namespace NewCyclone.Models
         /// <summary>
         /// 获取用户信息
         /// </summary>
-        public override void getInfo()
-        {
-            using (var db = new SysModelContainer())
-            {
-                var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == this.loginName);
-                setUserInfo(d);
-            }
-        }
-
-        /// <summary>
-        /// 获取用户信息
-        /// </summary>
         /// <param name="loginname"></param>
-        public override void getInfo(string loginname)
+        protected override void getInfo(string loginname)
         {
             using (var db = new SysModelContainer()) {
                 var d = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == loginname);
                 setUserInfo(d);
+                base.getInfo(loginname);
             }
         }
 
@@ -405,7 +389,6 @@ namespace NewCyclone.Models
             this.fullName = d.fullName;
             this.jobTitle = d.jobTitle;
             this.mobilePhone = d.mobilePhone;
-            base.setUserInfo(d);
         }
 
         #endregion
@@ -418,7 +401,7 @@ namespace NewCyclone.Models
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
-        public SysManagerUser checkLogin(ViewModelLoginReqeust condtion) {
+        public static SysManagerUser checkLogin(ViewModelLoginReqeust condtion) {
             SysValidata.valiData(condtion);
             using (var db = new SysModelContainer()) {
 
@@ -438,9 +421,9 @@ namespace NewCyclone.Models
                 }
                 d.lastLoginTime = DateTime.Now;
                 db.SaveChanges();
-                setUserInfo(d);
+                SysManagerUser user = new SysManagerUser(condtion.loginName);
                 SysUserLog.saveLog("用户登录", SysUserLogType.登陆);
-                return this;
+                return user;
             }
         }
 
@@ -461,7 +444,7 @@ namespace NewCyclone.Models
                 db.SaveChanges();
             }
             SysUserLog.saveLog(condtion, SysUserLogType.编辑, this.loginName);
-            getInfo();
+            getInfo(this.loginName);
             return this;
         }
 
@@ -474,11 +457,13 @@ namespace NewCyclone.Models
         {
             BaseResponseList<SysManagerUser> res = new BaseResponseList<SysManagerUser>();
             using (var db = new SysModelContainer()) {
+
+
                 res.total = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
                              where !x.isDeleted
                              && (condtion.roles.Count==0?true:condtion.roles.Contains(x.role))
                              && (condtion.loginName.Count==0?true:condtion.loginName.Contains(x.loginName))
-                             && (string.IsNullOrEmpty(condtion.keywords)? true : SqlMethods.Like(x.loginName,string.Format("%{0}%",condtion.keywords)) || SqlMethods.Like(x.fullName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.mobilePhone, string.Format("%{0}%", condtion.keywords)))
+                             && (string.IsNullOrEmpty(condtion.keywords)? true : (x.loginName.Contains(condtion.keywords) || x.fullName.Contains(condtion.keywords) || x.mobilePhone.Contains(condtion.keywords)))
                              select x.loginName).Count();
                 if (res.total > 0)
                 {
@@ -488,8 +473,7 @@ namespace NewCyclone.Models
                     res.rows = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
                                 where !x.isDeleted
                                 && (condtion.roles.Count == 0 ? true : condtion.roles.Contains(x.role))
-                                && (condtion.loginName.Count == 0 ? true : condtion.loginName.Contains(x.loginName))
-                                && (string.IsNullOrEmpty(condtion.keywords) ? true : SqlMethods.Like(x.loginName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.fullName, string.Format("%{0}%", condtion.keywords)) || SqlMethods.Like(x.mobilePhone, string.Format("%{0}%", condtion.keywords)))
+                                && (condtion.loginName.Count == 0 ? true : (x.loginName.Contains(condtion.keywords) || x.fullName.Contains(condtion.keywords) || x.mobilePhone.Contains(condtion.keywords)))
                                 orderby x.createdOn descending
                                 select new SysManagerUser(x.loginName) {
                                 }).Skip(condtion.getSkip()).Take(condtion.pageSize).ToList();
@@ -528,18 +512,18 @@ namespace NewCyclone.Models
         /// </summary>
         [Required(AllowEmptyStrings = false, ErrorMessage = "请填写姓名")]
         [StringLength(50)]
-        public string fullName;
+        public string fullName { get; set; }
         /// <summary>
         /// 手机号
         /// </summary>
         [Required(AllowEmptyStrings = true)]
         [Phone(ErrorMessage = "电话号码格式不正确")]
-        public string mobilePhone;
+        public string mobilePhone { get; set; }
 
         /// <summary>
         /// 职位
         /// </summary>
-        public string jobTitle;
+        public string jobTitle { get; set; }
 
         public virtual string toLogString()
         {
@@ -627,13 +611,13 @@ namespace NewCyclone.Models
         /// 旧密码
         /// </summary>
         [Required]
-        [StringLength(32,MinimumLength =32,ErrorMessage ="旧密码需要md5 32为加密")]
+        [StringLength(32,MinimumLength =32,ErrorMessage ="旧密码需要md5 32位加密")]
         public string oldPwd { get; set; }
         /// <summary>
         /// 新密码
         /// </summary>
         [Required]
-        [StringLength(32, MinimumLength = 32, ErrorMessage = "新密码需要md5 32为加密")]
+        [StringLength(32, MinimumLength = 32, ErrorMessage = "新密码需要md5 32位加密")]
         public string newPwd { get; set; }
     }
 }

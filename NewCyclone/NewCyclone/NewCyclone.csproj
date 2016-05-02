@@ -654,13 +654,16 @@
     <Content Include="DataBase\SysModel.edmx.diagram">
       <DependentUpon>SysModel.edmx</DependentUpon>
     </Content>
-    <Content Include="Scripts\jquery-1.11.3.min.map" />
+    <Content Include="Scripts\jquery.min.map" />
     <Content Include="Views\Shared\BootStrapLayout.cshtml" />
     <Content Include="Views\Home\index.cshtml" />
     <Content Include="Views\Shared\EasyUiLayout.cshtml" />
     <Content Include="Views\Manager\login.cshtml" />
     <Content Include="Views\Manager\index.cshtml" />
     <Content Include="Views\Manager\workTab.cshtml" />
+    <Content Include="Views\ManagerUser\changepwd.cshtml" />
+    <Content Include="Views\ManagerUser\info.cshtml" />
+    <Content Include="Views\ManagerUser\userInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
