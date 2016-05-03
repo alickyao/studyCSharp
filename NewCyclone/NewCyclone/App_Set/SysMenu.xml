@@ -42,6 +42,7 @@
     <children>
       <SysMenu>
         <text>系统管理员维护</text>
+        <url><![CDATA[/ManagerUser/userList?keywords=&roles=admin&roles=user]]></url>
       </SysMenu>
       <SysMenu>
         <text>系统日志查看</text>

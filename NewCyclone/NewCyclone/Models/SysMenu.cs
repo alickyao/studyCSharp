@@ -75,9 +75,17 @@ namespace NewCyclone.Models
             //从文件反序列化
             XmlSerializer reader = new XmlSerializer(typeof(List<SysMenu>));
             StreamReader file = new StreamReader(path);
-            sysMenu = (List<SysMenu>)reader.Deserialize(file);
-            file.Close();
-
+            try
+            {
+                sysMenu = (List<SysMenu>)reader.Deserialize(file);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally {
+                file.Close();
+            }
         }
 
         /// <summary>

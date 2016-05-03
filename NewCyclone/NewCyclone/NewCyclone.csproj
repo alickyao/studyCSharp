@@ -664,6 +664,7 @@
     <Content Include="Views\ManagerUser\changepwd.cshtml" />
     <Content Include="Views\ManagerUser\info.cshtml" />
     <Content Include="Views\ManagerUser\userInfo.cshtml" />
+    <Content Include="Views\ManagerUser\userList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

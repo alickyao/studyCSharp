@@ -29,7 +29,7 @@ namespace NewCyclone.Controllers
         /// </summary>
         /// <param name="pId">重设的pageId</param>
         public void setPageId(string pId = null) {
-            if (string.IsNullOrEmpty(pId)) {
+            if (!string.IsNullOrEmpty(pId)) {
                 this.pageId = pId;
                 ViewBag.pageId = pId;
             }
@@ -118,6 +118,20 @@ namespace NewCyclone.Controllers
 
             SysManagerUser user = new SysManagerUser(User.Identity.Name);
             ViewBag.user = user;
+            return View();
+        }
+
+        /// <summary>
+        /// 后台用户列表
+        /// </summary>
+        /// <param name="pageId">界面ID</param>
+        /// <param name="pageset">网格几面设置</param>
+        /// <param name="query">查询参数</param>
+        /// <returns></returns>
+        public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null)
+        {
+            setPageId(pageId);
+            ViewBag.query = query;
             return View();
         }
     }

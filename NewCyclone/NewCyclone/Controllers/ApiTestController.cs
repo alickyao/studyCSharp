@@ -22,8 +22,14 @@ namespace NewCyclone.Controllers
         {
             BaseResponse<List<string>> r = new BaseResponse<List<string>>();
             r.result = new List<string>();
-            for (int i = 0; i < 100; i++) {
-                r.result.Add(SysHelp.getNewId("HHmmss"));
+            for (int i = 10000; i < 20000; i++) {
+                SysManagerUser user = SysManagerUser.create(new ViewModelUserRegisterRequest() {
+                    fullName = "测试" + i,
+                    loginname = "text" + i,
+                    role = "user",
+                    mobilePhone = ""
+                });
+                r.result.Add(user.loginName);
             }
             return r;
         }

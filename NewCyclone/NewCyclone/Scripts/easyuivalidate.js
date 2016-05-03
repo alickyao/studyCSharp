@@ -55,6 +55,23 @@ $(document).ready(function () {
                 return Reg;
             },
             message:"不能小于指定的天数"
-        }
+        },
+        checkloginname: {//检查登录名是否有重复
+            validator: function (value, param) {
+                var r = false;
+                $.ajax({
+                    url: "/api/ApiSysManagerUser/checkLoginName?loginName=" + value,
+                    async: false,
+                    dataType: 'json',
+                    type: 'get',
+                    contentType: "application/json",
+                    success: function (data) {
+                        r = (data == 0);
+                    }
+                });
+                return r;
+            },
+            message: "该登录名已被使用"
+        },
     });
 });

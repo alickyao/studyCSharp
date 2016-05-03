@@ -87,7 +87,7 @@ namespace NewCyclone.Models
     public class BaseRequest {
         private int _page = 1;
         /// <summary>
-        /// 调取的页码 默认1 
+        /// 调取的页码 默认1，如果不需要系统进行翻页则需要传入0
         /// </summary>
         public int page {
             get { return _page; }

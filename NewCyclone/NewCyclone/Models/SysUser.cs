@@ -35,12 +35,20 @@ namespace NewCyclone.Models
         public static List<SysRoles> sysRoles { get; private set; }
 
         static SysRoles() {
-
             string path = HttpContext.Current.Server.MapPath("/App_Set/SysRole.xml");
-            XmlSerializer reader = new XmlSerializer(typeof(List<SysRoles>));
             StreamReader file = new StreamReader(path);
-            sysRoles = ((List<SysRoles>)reader.Deserialize(file));
-            file.Close();
+            try
+            {
+                XmlSerializer reader = new XmlSerializer(typeof(List<SysRoles>));
+                sysRoles = ((List<SysRoles>)reader.Deserialize(file));
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally {
+                file.Close();
+            }
         }
 
         /// <summary>
@@ -458,25 +466,23 @@ namespace NewCyclone.Models
             BaseResponseList<SysManagerUser> res = new BaseResponseList<SysManagerUser>();
             using (var db = new SysModelContainer()) {
 
-
-                res.total = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
-                             where !x.isDeleted
-                             && (condtion.roles.Count==0?true:condtion.roles.Contains(x.role))
-                             && (condtion.loginName.Count==0?true:condtion.loginName.Contains(x.loginName))
-                             && (string.IsNullOrEmpty(condtion.keywords)? true : (x.loginName.Contains(condtion.keywords) || x.fullName.Contains(condtion.keywords) || x.mobilePhone.Contains(condtion.keywords)))
-                             select x.loginName).Count();
+                var r = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
+                         where !x.isDeleted
+                         && (condtion.roles.Count == 0 ? true : condtion.roles.Contains(x.role))
+                         && (condtion.loginName.Count == 0 ? true : condtion.loginName.Contains(x.loginName))
+                         && (string.IsNullOrEmpty(condtion.q) ? true : (x.loginName.Contains(condtion.q) || x.fullName.Contains(condtion.q) || (string.IsNullOrEmpty(x.mobilePhone) ? false : x.mobilePhone.Contains(condtion.q))))
+                         select new { x.loginName,x.createdOn });
+                res.total = r.Count();
                 if (res.total > 0)
                 {
-                    if (condtion.loginName.Count > 0) {
-                        condtion.pageSize = res.total;
+                    r = r.OrderByDescending(p => p.createdOn);
+                    if (condtion.page == 0)
+                    {
+                        res.rows = r.Select(p => new SysManagerUser(p.loginName)).ToList();
                     }
-                    res.rows = (from x in db.Db_SysUserSet.OfType<Db_ManagerUser>().AsEnumerable()
-                                where !x.isDeleted
-                                && (condtion.roles.Count == 0 ? true : condtion.roles.Contains(x.role))
-                                && (condtion.loginName.Count == 0 ? true : (x.loginName.Contains(condtion.keywords) || x.fullName.Contains(condtion.keywords) || x.mobilePhone.Contains(condtion.keywords)))
-                                orderby x.createdOn descending
-                                select new SysManagerUser(x.loginName) {
-                                }).Skip(condtion.getSkip()).Take(condtion.pageSize).ToList();
+                    else {
+                        res.rows = r.Skip(condtion.getSkip()).Take(condtion.pageSize).Select(p => new SysManagerUser(p.loginName)).ToList();
+                    }
                 }
             }
             return res;
@@ -513,11 +519,10 @@ namespace NewCyclone.Models
         [Required(AllowEmptyStrings = false, ErrorMessage = "请填写姓名")]
         [StringLength(50)]
         public string fullName { get; set; }
+
         /// <summary>
         /// 手机号
         /// </summary>
-        [Required(AllowEmptyStrings = true)]
-        [Phone(ErrorMessage = "电话号码格式不正确")]
         public string mobilePhone { get; set; }
 
         /// <summary>
@@ -600,7 +605,7 @@ namespace NewCyclone.Models
         /// <summary>
         /// 关键字：姓名，电话，登录名
         /// </summary>
-        public string keywords { get; set; }
+        public string q { get; set; }
     }
 
     /// <summary>
