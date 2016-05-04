@@ -93,21 +93,21 @@
             });
             dd.dialog("open");
         });
-
+        //用户信息按钮
         $("#@(pageId)userInfoBtn").click(function () {
             var dd = $("#@(pageId)userInfoWin");
             dd.dialog({
                 title: "我的",
-                href: "/ManagerUser/info"
+                href: "/ManagerUser/userInfo"
             });
             dd.dialog("open");
         });
     });
 </script>
 
-<div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="对话框" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
+<div id="@(pageId)changePwdWin" class="easyui-dialog dialogwin" title="修改密码" style="width:420px;height:200px" data-options="resizable:false,modal:true,closed:true">
 </div>
-<div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="对话框" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
+<div id="@(pageId)userInfoWin" class="easyui-dialog dialogwin" title="我的" style="width:80%;height:80%" data-options="resizable:false,modal:true,closed:true">
 </div>
 
 <div data-options="region:'north',border:false" style="height: 63px;">

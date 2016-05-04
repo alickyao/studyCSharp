@@ -98,24 +98,13 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 用户信息导航
-        /// </summary>
-        /// <returns></returns>
-        [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult info(string pageId = null) {
-            setPageId(pageId);
-            return View();
-        }
-
-        /// <summary>
-        /// 编辑当前登陆人的信息
+        /// 当前登陆人的信息
         /// </summary>
         /// <param name="pageId"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult userInfo(string pageId = null) {
             setPageId(pageId);
-
             SysManagerUser user = new SysManagerUser(User.Identity.Name);
             ViewBag.user = user;
             return View();
@@ -128,11 +117,61 @@ namespace NewCyclone.Controllers
         /// <param name="viewset">界面设置</param>
         /// <param name="query">查询参数</param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null,string viewset = "default")
         {
             setPageId(pageId);
             ViewBag.query = query;
             return View("userList_" + viewset);
+        }
+
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="loginName">登录名</param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "admin")]
+        public ActionResult editUser(string loginName,string pageId = null) {
+            setPageId(pageId);
+            ViewBag.loginName = loginName;
+            return View();
+        }
+    }
+
+    /// <summary>
+    /// 后台消息
+    /// </summary>
+    public class ManagerMsgController : MBaseController {
+
+        /// <summary>
+        /// 用户日志
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <param name="viewset"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult userLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId,string viewset = "default") {
+            setPageId(pageId);
+            ViewBag.condtion = condtion;
+            ViewModelSearchUserBaseRequest searchUserRequest = new ViewModelSearchUserBaseRequest();
+            ViewBag.searchUserRequest = searchUserRequest;
+            return View("userLog_" + viewset);
+        }
+
+        /// <summary>
+        /// 错误日志
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult exceptionLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId)
+        {
+            setPageId(pageId);
+            ViewBag.condtion = condtion;
+            return View();
         }
     }
 }

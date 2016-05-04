@@ -45,7 +45,18 @@
         <url><![CDATA[/ManagerUser/userList?keywords=&roles=admin&roles=user]]></url>
       </SysMenu>
       <SysMenu>
-        <text>系统日志查看</text>
+        <text>系统日志</text>
+        <children>
+          <SysMenu>
+            <text>用户日志</text>
+            <url>
+              <![CDATA[/ManagerMsg/userLog]]>
+            </url>
+          </SysMenu>
+          <SysMenu>
+            <text>错误日志</text>
+          </SysMenu>
+        </children>
       </SysMenu>
     </children>
   </SysMenu>

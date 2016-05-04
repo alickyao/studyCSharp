@@ -23,6 +23,7 @@
             multiple: true,
             editable: false,
             required: false,
+            panelHeight:'auto',
             formatter: function (row) {
                 return row.name + '[' + row.role + ']'
             },
@@ -70,6 +71,17 @@
             pageSize: request.pageSize,
             singleSelect: true,
             idField: "loginName",
+            onDblClickRow: function (rowIndex, rowData) {
+                var dd = $("#@(pageId)edit");
+                dd.dialog({
+                    title: "用户：[" + rowData.fullName + "]",
+                    href: '/ManagerUser/editUser?loginName=' + rowData.loginName,
+                    onClose: function () {
+                        loadGrid();
+                    }
+                });
+                dd.dialog("open");
+            },
             columns: [[
                 { field: 'loginName', title: '登录名' },
                 { field: 'fullName', title: '姓名' },
@@ -112,36 +124,27 @@
                     iconCls: "icon-add",
                     handler: function () {
                         var dd = $("#@(pageId)createnew");
-                        dd.find("form").form("clear");
                         dd.dialog("open");
-                    }
-                },
-                {
-                    text: "编辑",
-                    iconCls: "icon-edit",
-                    handler: function () {
-
-                    }
-                },
-                {
-                    text: "撤销",
-                    iconCls: "icon-undo",
-                    handler: function () {
-
-                    }
-                },
-                {
-                    text: "保存",
-                    iconCls: "icon-save",
-                    handler: function () {
-
                     }
                 },
                 {
                     text: "删除",
                     iconCls: "icon-clear",
                     handler: function () {
-
+                        var row = grid.datagrid("getSelected");
+                        if (row == null) {
+                            $.messager.alert('错误', "请先选中一行", 'error');
+                        }
+                        else {
+                            $.messager.confirm('Confirm', '确定删除用户:'+row.fullName+"?", function (r) {
+                                if (r) {
+                                    $.getJSON("/api/ApiSysManagerUser/delete?loginName=" + row.loginName, function (json) {
+                                        showmsg(json);
+                                        loadGrid();
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
             ]
@@ -174,7 +177,7 @@
                         showmsg(json,"保存成功");
                         btn.linkbutton("enable");
                         loadGrid();
-                        $("#@(pageId)createnew").dialog("close");
+                        from.form("clear");
                     });
                 }
             }
@@ -197,7 +200,7 @@
             <tr>
                 <td>角色</td>
                 <td>
-                    <select class="easyui-combobox" name="role" style="width:150px;" data-options="valueField:'role',textField:'name',url:'/api/ApiSysManagerUser/getRolsList?t=0',method:'get',editable:false,required:true,formatter:function(row){
+                    <select class="easyui-combobox" name="role" style="width:150px;" data-options="valueField:'role',textField:'name',url:'/api/ApiSysManagerUser/getRolsList?t=0',method:'get',editable:false,required:true,panelHeight:'auto',formatter:function(row){
                                 return row.name+'['+ row.role +']'
                             }">
                     </select>
@@ -205,7 +208,7 @@
             </tr>
             <tr>
                 <td>姓名</td>
-                <td><input type="text" class="easyui-textbox" name="fullName" data-options="required:true,validType:'length[2,50]'" /></td>
+                <td><input type="text" class="easyui-textbox" name="fullName" data-options="required:true,validType:'length[2,20]'" /></td>
             </tr>
             <tr>
                 <td>电话</td>
@@ -222,6 +225,9 @@
         </table>
     </form>
 </div>
+
+<div id="@(pageId)edit" class="easyui-dialog dialogwin" data-options="inline:true,resizable:false,modal:true,closed:true,title:'新增'" style="width:80%;height:80%"></div>
+
 <div class="easyui-layout" data-options="fit:true">
     <div id="@(pageId)query" data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd;">
         <form>

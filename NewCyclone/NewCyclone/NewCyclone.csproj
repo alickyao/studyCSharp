@@ -563,6 +563,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ApiSysMsgController.cs" />
     <Compile Include="Controllers\ApiSysUserController.cs" />
     <Compile Include="Controllers\ApiTestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -621,6 +622,7 @@
     <Compile Include="Models\SysMenu.cs" />
     <Compile Include="Models\SysMsg.cs" />
     <Compile Include="Models\SysTree.cs" />
+    <Compile Include="Models\SysUi.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -662,9 +664,11 @@
     <Content Include="Views\Manager\index.cshtml" />
     <Content Include="Views\Manager\workTab.cshtml" />
     <Content Include="Views\ManagerUser\changepwd.cshtml" />
-    <Content Include="Views\ManagerUser\info.cshtml" />
     <Content Include="Views\ManagerUser\userInfo.cshtml" />
     <Content Include="Views\ManagerUser\userList_default.cshtml" />
+    <Content Include="Views\ManagerUser\editUser.cshtml" />
+    <Content Include="Views\ManagerMsg\userLog_default.cshtml" />
+    <Content Include="Views\ManagerMsg\userLog_simp.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

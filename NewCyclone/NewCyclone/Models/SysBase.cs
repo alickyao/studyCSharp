@@ -217,5 +217,25 @@ namespace NewCyclone.Models
             
             return sb.ToString();
         }
+
+        /// <summary>
+        /// 获取枚举集合
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static List<VMComboBox> getEnumList(Type t) {
+            List<VMComboBox> result = new List<VMComboBox>();
+            foreach (var s in Enum.GetValues(t))
+            {
+                int value = Convert.ToInt32(s);
+                string text = s.ToString();
+                result.Add(new VMComboBox()
+                {
+                    id = value.ToString(),
+                    text = text
+                });
+            }
+            return result;
+        }
     }
 }

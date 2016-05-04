@@ -140,6 +140,19 @@ namespace NewCyclone.Controllers
             return result;
         }
 
+
+        /// <summary>
+        /// 获取后台用户信息
+        /// </summary>
+        /// <param name="loginName">登录名</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public SysManagerUser getUserInfo(string loginName) {
+            SysManagerUser user = new SysManagerUser(loginName);
+            return user;
+        }
+
         /// <summary>
         /// 编辑后台用户信息
         /// </summary>
@@ -187,6 +200,27 @@ namespace NewCyclone.Controllers
                 res = SysException.getResult(res, e, condtion);
             }
             return res;
+        }
+
+        /// <summary>
+        /// 设置禁用
+        /// </summary>
+        /// <param name="loginName">登录名</param>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public BaseResponse setDisable(string loginName, ViewModelSetUserDisable condtion) {
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                SysManagerUser user = new SysManagerUser(loginName);
+                user.setDisable(condtion);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
+            }
+            return result;
         }
 
         /// <summary>
