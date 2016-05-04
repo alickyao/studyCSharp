@@ -582,7 +582,7 @@ namespace NewCyclone.Models
         public override string toLogString()
         {
             StringBuilder s = new StringBuilder();
-            s.Append("添加新用户:").Append(this.fullName).Append("[" + this.loginname + "]");
+            s.Append("添加新用户:").Append(this.fullName).AppendFormat("[{0},{1}]", this.role, this.loginname);
             return s.ToString();
         }
     }
