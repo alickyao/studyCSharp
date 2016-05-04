@@ -125,14 +125,14 @@ namespace NewCyclone.Controllers
         /// 后台用户列表
         /// </summary>
         /// <param name="pageId">界面ID</param>
-        /// <param name="pageset">网格几面设置</param>
+        /// <param name="viewset">界面设置</param>
         /// <param name="query">查询参数</param>
         /// <returns></returns>
-        public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null)
+        public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null,string viewset = "default")
         {
             setPageId(pageId);
             ViewBag.query = query;
-            return View();
+            return View("userList_" + viewset);
         }
     }
 }
