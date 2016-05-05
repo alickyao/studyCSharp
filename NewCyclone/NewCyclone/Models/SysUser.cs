@@ -478,7 +478,7 @@ namespace NewCyclone.Models
                 d.lastLoginTime = DateTime.Now;
                 db.SaveChanges();
                 SysManagerUser user = new SysManagerUser(condtion.loginName);
-                SysUserLog.saveLog("用户登录", SysUserLogType.登陆);
+                SysUserLog.saveLoginLog(user.loginName);
                 return user;
             }
         }

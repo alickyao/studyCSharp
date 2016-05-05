@@ -39,6 +39,24 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
+        /// 检索系统所有消息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<BaseResponseList<SysMsg>> searchMsgList(VMMsgSearchMsgRequest condtion) {
+            BaseResponse<BaseResponseList<SysMsg>> result = new BaseResponse<BaseResponseList<SysMsg>>();
+            try
+            {
+                result.result = SysMsg.searchLog(condtion);
+            }
+            catch (Exception e) {
+                SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 检索系统用户日志
         /// </summary>
         /// <param name="condtion"></param>
@@ -62,11 +80,11 @@ namespace NewCyclone.Controllers
         /// <param name="condtion"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<BaseResponseList<SysExcptionLog>> searchExceptionLog(WMMsgSearchExceptionLogRequest condtion) {
+        public BaseResponse<BaseResponseList<SysExcptionLog>> searchExceptionLog(VMMsgSearchExceptionLogRequest condtion) {
             BaseResponse<BaseResponseList<SysExcptionLog>> result = new BaseResponse<BaseResponseList<SysExcptionLog>>();
             try
             {
-                result.result = SysExcptionLog.searchlog(condtion);
+                result.result = SysExcptionLog.searchLog(condtion);
             }
             catch (Exception e) {
                 result = SysException.getResult(result, e, condtion);

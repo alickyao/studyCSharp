@@ -87,6 +87,32 @@ namespace NewCyclone.Models
                 this.msgType = (SysMessageType)d.msgType;
             }
         }
+
+        /// <summary>
+        /// 检索系统消息
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static BaseResponseList<SysMsg> searchLog(VMMsgSearchMsgRequest condtion) {
+            BaseResponseList<SysMsg> result = new BaseResponseList<SysMsg>();
+            using (var db = new SysModelContainer()) {
+                var r = (from c in db.Db_SysMsgSet.AsEnumerable()
+                         where (condtion.msgType.Count == 0 ? true : condtion.msgType.Contains(c.msgType))
+                         orderby c.Id descending
+                         select c.Id);
+                result.total = r.Count();
+                if (result.total > 0) {
+                    if (condtion.page == 0) {
+                        result.rows = r.Select(p => new SysMsg(p)).ToList();
+                    }
+                    else
+                    {
+                        result.rows = r.Skip(condtion.getSkip()).Take(condtion.pageSize).Select(p => new SysMsg(p)).ToList();
+                    }
+                }
+            }
+            return result;
+        }
     }
 
     /// <summary>
@@ -157,30 +183,56 @@ namespace NewCyclone.Models
 
 
         /// <summary>
-        /// 保存系统用户日志
+        /// 保存系统用户日志【用户登录请不要使用该方法】
         /// </summary>
         /// <param name="message">需要保存的日志文本</param>
         /// <param name="t">类型</param>
         /// <param name="fkId">关联的ID</param>
         public static void saveLog(string message, SysUserLogType t, string fkId = null)
         {
-            string loginname = "admin";
-            IIdentity user = HttpContext.Current.User.Identity;
-            if (user.IsAuthenticated) {
-                loginname = user.Name;
+            if (t != SysUserLogType.登陆)
+            {
+                string loginname = "admin";
+                IIdentity user = HttpContext.Current.User.Identity;
+                if (user.IsAuthenticated)
+                {
+                    loginname = user.Name;
+                }
+                using (var db = new SysModelContainer())
+                {
+                    Db_SysUserLog log = new Db_SysUserLog()
+                    {
+                        createdOn = DateTime.Now,
+                        Db_SysUser_loginName = loginname,
+                        fkId = fkId,
+                        logType = t.GetHashCode(),
+                        msgType = SysMessageType.日志.GetHashCode(),
+                        message = message,
+                        ip = HttpContext.Current.Request.UserHostAddress,
+                        device = HttpContext.Current.Request.UserAgent
+                    };
+                    db.Db_SysMsgSet.Add(log);
+                    db.SaveChanges();
+                }
             }
+        }
+
+        /// <summary>
+        /// 保存用户登录日志
+        /// </summary>
+        /// <param name="loginName"></param>
+        public static void saveLoginLog(string loginName) {
             using (var db = new SysModelContainer())
             {
                 Db_SysUserLog log = new Db_SysUserLog()
                 {
                     createdOn = DateTime.Now,
-                    Db_SysUser_loginName = loginname,
-                    fkId = fkId,
-                    logType = t.GetHashCode(),
+                    Db_SysUser_loginName = loginName,
+                    logType = SysUserLogType.登陆.GetHashCode(),
                     msgType = SysMessageType.日志.GetHashCode(),
-                    message = message,
+                    message = "用户登录",
                     ip = HttpContext.Current.Request.UserHostAddress,
-                    device =HttpContext.Current.Request.UserAgent
+                    device = HttpContext.Current.Request.UserAgent
                 };
                 db.Db_SysMsgSet.Add(log);
                 db.SaveChanges();
@@ -268,7 +320,7 @@ namespace NewCyclone.Models
         /// 检索异常日志
         /// </summary>
         /// <returns></returns>
-        public static BaseResponseList<SysExcptionLog> searchlog(WMMsgSearchExceptionLogRequest condtion) {
+        public static BaseResponseList<SysExcptionLog> searchLog(VMMsgSearchExceptionLogRequest condtion) {
             BaseResponseList<SysExcptionLog> result = new BaseResponseList<SysExcptionLog>();
             using (var db = new SysModelContainer()) {
                 var r = (from c in db.Db_SysMsgSet.OfType<Db_SysExceptionLog>().AsEnumerable()
@@ -291,6 +343,21 @@ namespace NewCyclone.Models
                 }
             }
             return result;
+        }
+    }
+
+    /// <summary>
+    /// 检索系统消息请求
+    /// </summary>
+    public class VMMsgSearchMsgRequest : BaseRequest {
+        private List<int> _msgType = new List<int>();
+
+        /// <summary>
+        /// 消息类型 来自枚举 SysMessageType
+        /// </summary>
+        public List<int> msgType {
+            get { return _msgType; }
+            set { _msgType = value; }
         }
     }
 
@@ -318,7 +385,7 @@ namespace NewCyclone.Models
     /// <summary>
     /// 错误日志检索请求
     /// </summary>
-    public class WMMsgSearchExceptionLogRequest : BaseRequest {
+    public class VMMsgSearchExceptionLogRequest : BaseRequest {
         /// <summary>
         /// 类型
         /// </summary>

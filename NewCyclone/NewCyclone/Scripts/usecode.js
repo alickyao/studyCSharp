@@ -242,15 +242,12 @@ $.fn.serializeObject = function () {
 
 
 //通用提示
-function showmsg(json, msg) {
-    if (msg == null || msg == undefined) {
-        msg = "操作成功"
-    }
+function showmsg(json) {
     if (json.code == 0) {
-        $.messager.alert('Success', msg, 'info');
+        $.messager.alert('已完成', json.msg, 'info');
     }
     else {
-        $.messager.alert('错误', json.msg, 'error');
+        $.messager.alert('发生异常', json.msg, 'error');
     }
 }
 

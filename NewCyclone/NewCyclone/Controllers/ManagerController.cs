@@ -178,7 +178,7 @@ namespace NewCyclone.Controllers
         /// <param name="pageId"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult exceptionLog(WMMsgSearchExceptionLogRequest condtion, string pageId)
+        public ActionResult exceptionLog(VMMsgSearchExceptionLogRequest condtion, string pageId)
         {
             setPageId(pageId);
             ViewBag.condtion = condtion;

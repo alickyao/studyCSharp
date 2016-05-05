@@ -28,7 +28,7 @@
                     d.newPwd = md5(d.newPwd);
                     console.log(d);
                     $.post("/api/ApiSysManagerUser/reSetNewPwd", d, function (json) {
-                        showmsg(json, "密码修改成功<br />下次登录请使用新密码");
+                        showmsg(json);
                         btn.linkbutton("enable");
                     });
                 }

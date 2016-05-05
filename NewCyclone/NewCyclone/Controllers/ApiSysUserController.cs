@@ -39,6 +39,7 @@ namespace NewCyclone.Controllers
                 Thread.Sleep(500);
                 result.result = SysManagerUser.checkLogin(condtion);
                 FormsAuthentication.SetAuthCookie(result.result.loginName, true);
+                result.msg = "登录成功";
             }
             catch (SysException ex)
             {
@@ -56,12 +57,24 @@ namespace NewCyclone.Controllers
         /// <returns></returns>
         [HttpGet]
         public BaseResponse logout() {
-            FormsAuthentication.SignOut();
-            return new BaseResponse();
+            if (User.Identity.IsAuthenticated)
+            {
+                FormsAuthentication.SignOut();
+                return new BaseResponse()
+                {
+                    msg = "退出登录成功"
+                };
+            }
+            else {
+                return new BaseResponse()
+                {
+                    msg = "您还没有登录"
+                };
+            }
         }
 
         /// <summary>
-        /// 重设用户的密码
+        /// 重置用户的密码
         /// </summary>
         /// <param name="loginName">用户的登录名</param>
         /// <returns></returns>
@@ -73,6 +86,7 @@ namespace NewCyclone.Controllers
             {
                 SysManagerUser user = new SysManagerUser(loginName);
                 user.reSetPwd();
+                result.msg = "重置成功";
             }
             catch (Exception e) {
                 result = SysException.getResult(result, e, loginName);
@@ -93,6 +107,7 @@ namespace NewCyclone.Controllers
             {
                 SysManagerUser user = new SysManagerUser(User.Identity.Name);
                 user.reSetNewPwd(condtion);
+                result.msg = "密码修改成功";
             }
             catch (SysException ex) {
                 result = ex.getresult(result, true);
@@ -129,6 +144,7 @@ namespace NewCyclone.Controllers
             try
             {
                 result.result = SysManagerUser.create(condtion);
+                result.msg = "保存成功";
             }
             catch (SysException r)
             {
@@ -172,6 +188,7 @@ namespace NewCyclone.Controllers
 
                 SysManagerUser smu = new SysManagerUser(loginName);
                 result.result = smu.saveInfo(condtion);
+                result.msg = "保存成功";
             }
             catch (SysException ex)
             {
@@ -216,6 +233,7 @@ namespace NewCyclone.Controllers
             {
                 SysManagerUser user = new SysManagerUser(loginName);
                 user.setDisable(condtion);
+                result.msg = "设置成功";
             }
             catch (Exception e) {
                 result = SysException.getResult(result, e, condtion);
@@ -237,6 +255,7 @@ namespace NewCyclone.Controllers
             {
                 SysUser user = new SysManagerUser(loginName);
                 user.delete();
+                res.msg = "删除成功";
             }
             catch (Exception e) {
                 res = SysException.getResult(res, e, loginName);

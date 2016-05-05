@@ -1,7 +1,7 @@
 ﻿
 @{
     Layout = null;
-    WMMsgSearchExceptionLogRequest condtion = ViewBag.condtion;
+    VMMsgSearchExceptionLogRequest condtion = ViewBag.condtion;
     string q = JsonConvert.SerializeObject(condtion);
     string pageId = ViewBag.PageId;
 
@@ -42,7 +42,7 @@
             fitColumns: true,
             striped: true,
             pagination: true,
-            rownumbers: true,
+            rownumbers: false,
             pageNumber: request.page,
             pageSize: request.pageSize,
             singleSelect: true,
@@ -94,7 +94,20 @@
         loadGrid();
 
         //查询栏
-
+        $("#@(pageId)searchbtn").click(function () {
+            var d = $("#@(pageId)searchform").serializeObject();
+            request.page = 1;
+            request.type = d.type;
+            request.beginDate = d.beginDate;
+            request.endDate = d.endDate;
+            loadGrid();
+            grid.datagrid('getPager').pagination({
+                pageNumber: 1
+            });
+        });
+        $("#@(pageId)clearsearchbtn").click(function () {
+            $("#@(pageId)searchform").form("clear");
+        });
     });
 </script>
 
@@ -108,7 +121,7 @@
                         <table>
                             <tr>
                                 <td>类型:</td>
-                                <td><select class="easyui-combobox" id="@(pageId)selectType" name="logType" panelHeight="auto" style="width:100px"></select></td>
+                                <td><select class="easyui-combobox" id="@(pageId)selectType" name="type" panelHeight="auto" style="width:100px"></select></td>
                                 <td>开始时间:</td>
                                 <td><input type="text" class="easyui-datebox" name="beginDate" data-options="editable:false" /></td>
                                 <td>结束时间:</td>

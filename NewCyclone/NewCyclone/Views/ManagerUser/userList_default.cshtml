@@ -174,7 +174,7 @@
                     var d = from.serializeObject();
                     console.log(d);
                     $.post("/api/ApiSysManagerUser/createUser", d, function (json) {
-                        showmsg(json,"保存成功");
+                        showmsg(json);
                         btn.linkbutton("enable");
                         loadGrid();
                         from.form("clear");
