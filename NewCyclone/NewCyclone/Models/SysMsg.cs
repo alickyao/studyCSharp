@@ -103,12 +103,8 @@ namespace NewCyclone.Models
         /// <summary>
         /// 对应用户的显示信息
         /// </summary>
-        protected SysUser user { get; set; }
+        public SysUser userInfo { get; set; }
 
-        /// <summary>
-        /// 对应用户的信息
-        /// </summary>
-        public string userInfo { get; set; }
 
         /// <summary>
         /// 用户日志类型
@@ -144,20 +140,7 @@ namespace NewCyclone.Models
                 this.logType = (SysUserLogType)d.logType;
                 this.loginName = d.Db_SysUser_loginName;
             }
-            //所属用户判断
-            //根据角色来判断
-            SysUser user = new SysUser(this.loginName);
-            SysRoles userrole = SysRoles.sysRoles.Single(p => p.role.Equals(user.role));
-            if (userrole.cat == 0)
-            {
-                //后台
-                this.user = new SysManagerUser(user.loginName);
-                this.userInfo = this.user.ToString();
-            }
-            else {
-                //其他,会员
-                
-            }
+            this.userInfo = new SysUser(this.loginName);
         }
 
 
@@ -235,6 +218,83 @@ namespace NewCyclone.Models
     }
 
     /// <summary>
+    /// 系统异常日志
+    /// </summary>
+    public class SysExcptionLog : SysMsg {
+
+        /// <summary>
+        /// 错误类型
+        /// </summary>
+        public SysExceptionType errorType { get; set; }
+
+        /// <summary>
+        /// 请求参数
+        /// </summary>
+        public string condtion { get; set; }
+
+        /// <summary>
+        /// 引发异常的应用程序或对象的名称
+        /// </summary>
+        public string source { get; set; }
+
+        /// <summary>
+        /// 堆栈信息
+        /// </summary>
+        public string stackTrace { get; set; }
+
+        /// <summary>
+        /// 引发当前异常的方法
+        /// </summary>
+        public string targetSite { get; set; }
+
+
+
+        /// <summary>
+        /// 使用ID构造消息
+        /// </summary>
+        /// <param name="id"></param>
+        public SysExcptionLog(long id) : base(id)
+        {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysMsgSet.OfType<Db_SysExceptionLog>().Single(p => p.Id == id);
+                this.errorType = (SysExceptionType)d.errorCode.GetHashCode();
+                this.condtion = d.condtion;
+                this.source = d.source;
+                this.stackTrace = d.stackTrace;
+                this.targetSite = d.targetSite;
+            }
+        }
+        /// <summary>
+        /// 检索异常日志
+        /// </summary>
+        /// <returns></returns>
+        public static BaseResponseList<SysExcptionLog> searchlog(WMMsgSearchExceptionLogRequest condtion) {
+            BaseResponseList<SysExcptionLog> result = new BaseResponseList<SysExcptionLog>();
+            using (var db = new SysModelContainer()) {
+                var r = (from c in db.Db_SysMsgSet.OfType<Db_SysExceptionLog>().AsEnumerable()
+                         where (condtion.type == null? true :c.errorCode == condtion.type.GetHashCode())
+                         && (condtion.beginDate == null? true :c.createdOn>=condtion.beginDate)
+                         && (condtion.endDate==null? true :c.createdOn<=condtion.endDate)
+                         orderby c.Id descending
+                         select c.Id
+                         );
+                result.total = r.Count();
+                if (result.total > 0)
+                {
+                    if (condtion.page == 0)
+                    {
+                        result.rows = r.Select(p => new SysExcptionLog(p)).ToList();
+                    }
+                    else {
+                        result.rows = r.Skip(condtion.getSkip()).Take(condtion.pageSize).Select(p => new SysExcptionLog(p)).ToList();
+                    }
+                }
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
     /// 用户日志检索请求
     /// </summary>
     public class ViewModelMsgSearchUserLogReqeust : BaseRequest {
@@ -253,5 +313,23 @@ namespace NewCyclone.Models
         /// 日志类型
         /// </summary>
         public Nullable<SysUserLogType> logType { get; set; }
+    }
+
+    /// <summary>
+    /// 错误日志检索请求
+    /// </summary>
+    public class WMMsgSearchExceptionLogRequest : BaseRequest {
+        /// <summary>
+        /// 类型
+        /// </summary>
+        public Nullable<SysExceptionType> type { get; set; }
+        /// <summary>
+        /// 开始日期
+        /// </summary>
+        public Nullable<DateTime> beginDate { get; set; }
+        /// <summary>
+        /// 结束日期
+        /// </summary>
+        public Nullable<DateTime> endDate { get; set; }
     }
 }

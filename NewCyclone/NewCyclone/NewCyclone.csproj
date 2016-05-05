@@ -669,6 +669,9 @@
     <Content Include="Views\ManagerUser\editUser.cshtml" />
     <Content Include="Views\ManagerMsg\userLog_default.cshtml" />
     <Content Include="Views\ManagerMsg\userLog_simp.cshtml" />
+    <Content Include="Views\ManagerMsg\exceptionLog.cshtml" />
+    <Content Include="Views\ManagerMsg\userLogInfo.cshtml" />
+    <Content Include="Views\ManagerMsg\exceptionLogInfo.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

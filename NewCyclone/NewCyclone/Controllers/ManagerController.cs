@@ -145,7 +145,7 @@ namespace NewCyclone.Controllers
     public class ManagerMsgController : MBaseController {
 
         /// <summary>
-        /// 用户日志
+        /// 用户日志列表
         /// </summary>
         /// <param name="condtion"></param>
         /// <param name="pageId"></param>
@@ -161,17 +161,40 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 错误日志
+        /// 用户日志详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult userLogInfo(int id) {
+            ViewBag.info = new SysUserLog(id);
+            return View();
+        }
+
+        /// <summary>
+        /// 异常日志列表
         /// </summary>
         /// <param name="condtion"></param>
         /// <param name="pageId"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult exceptionLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId)
+        public ActionResult exceptionLog(WMMsgSearchExceptionLogRequest condtion, string pageId)
         {
             setPageId(pageId);
             ViewBag.condtion = condtion;
             return View();
         }
+
+        /// <summary>
+        /// 异常日志详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public ActionResult exceptionLogInfo(long id) {
+            ViewBag.info = new SysExcptionLog(id);
+            return View();
+        }
+
     }
 }

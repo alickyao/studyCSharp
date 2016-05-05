@@ -1,25 +1,35 @@
 ﻿
 @{
     Layout = null;
-    ViewModelMsgSearchUserLogReqeust condtion = ViewBag.condtion;
+    WMMsgSearchExceptionLogRequest condtion = ViewBag.condtion;
     string q = JsonConvert.SerializeObject(condtion);
-    string pageId = ViewBag.pageId;
-    List<VMComboBox> logType = SysHelp.getEnumList(typeof(SysUserLogType));
-    string lt = JsonConvert.SerializeObject(logType);
+    string pageId = ViewBag.PageId;
+
+    List<VMComboBox> etype = SysHelp.getEnumList(typeof(SysExceptionType));
+    string t = JsonConvert.SerializeObject(etype);
 }
+
+
 <script>
     $(document).ready(function () {
         var grid = $("#@(pageId)grid");
         var request = $.parseJSON('@Html.Raw(q)');
-        var logType = $.parseJSON('@Html.Raw(lt)');
+        var errorType = $.parseJSON('@Html.Raw(t)');
 
         var query = $("#@(pageId)query");
         query.css("height", query.find("form").height() + 42);
 
+        $("#@(pageId)selectType").combobox({
+            valueField: "id",
+            textField: "text",
+            data: errorType,
+            editable: false
+        });
+
         function loadGrid() {
             console.log(request);
             grid.datagrid("loading");
-            $.post("/api/ApiSysMsg/searchUserLog", request, function (json) {
+            $.post("/api/ApiSysMsg/searchExceptionLog", request, function (json) {
                 grid.datagrid("loaded");
                 console.log(json);
                 gridLoadData(grid, json);
@@ -37,13 +47,20 @@
             pageSize: request.pageSize,
             singleSelect: true,
             idField: "Id",
+            onClickRow: function (rowIndex, rowData) {
+                var infowin = $("#@(pageId)info");
+                infowin.panel({
+                    href: '/ManagerMsg/exceptionLogInfo/' + rowData.Id
+                });
+                infowin.panel("refresh");
+            },
             columns: [[
                 {
                     field: 'Id', title: 'ID',
                 },
                 {
-                    field: 'logType', title: '类型', align: 'center', formatter: function (value, row, index) {
-                        return logType[value].text;
+                    field: 'errorType', title: '类型', align: 'center', formatter: function (value, row, index) {
+                        return errorType[value].text;
                     }
                 },
                 {
@@ -55,19 +72,13 @@
                     }
                 },
                 {
-                    field: 'userInfo', title: '用户', formatter: function (value, row, index) {
-                        return value.showName;
-                    }
+                    field: 'message', title: '错误信息'
                 },
                 {
-                    field: 'message', title: '消息',
-                },
-
-                {
-                    field: 'ip', title: 'IP地址',
+                    field: 'source',title:'对象/应用程序'
                 },
                 {
-                    field: 'device', title: '设备',
+                    field: 'targetSite',title:'引发异常的方法'
                 }
             ]]
         });
@@ -80,44 +91,13 @@
                 loadGrid();
             }
         });
-
         loadGrid();
 
-        $("#@(pageId)selectType").combobox({
-            valueField:"id",
-            textField:"text",
-            data: logType,
-            editable:false
-        });
-        $("#@(pageId)selectuser").combobox({
-            valueField: "loginName",
-            textField: "fullName",
-            panelHeight:"auto",
-            onChange: function (newValue, oldValue) {
-                suq.q = newValue;
-                $("#@(pageId)selectuser").combobox("reload")
-            },
-            loader: function (p, success, error) {
-                $.post("/api/ApiSysManagerUser/searchUserList", suq, function (json) {
-                    success(json.result.rows);
-                });
-            }
-        });
+        //查询栏
 
-        $("#@(pageId)searchbtn").click(function () {
-            var d = $("#@(pageId)searchform").serializeObject();
-            request.page = 1;
-            request.logType = d.logType;
-            loadGrid();
-            grid.datagrid('getPager').pagination({
-                pageNumber: 1
-            });
-        });
-        $("#@(pageId)clearsearchbtn").click(function () {
-            $("#@(pageId)searchform").form("clear");
-        });
     });
 </script>
+
 <div class="easyui-layout" data-options="fit:true">
 
     <div id="@(pageId)query" data-options="region:'north',border:false,title:'查询栏',split:false,iconCls:'icon-search'" style="padding:5px; background:#fdfdfd;">
@@ -129,6 +109,10 @@
                             <tr>
                                 <td>类型:</td>
                                 <td><select class="easyui-combobox" id="@(pageId)selectType" name="logType" panelHeight="auto" style="width:100px"></select></td>
+                                <td>开始时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="beginDate" data-options="editable:false" /></td>
+                                <td>结束时间:</td>
+                                <td><input type="text" class="easyui-datebox" name="endDate" data-options="editable:false" /></td>
                             </tr>
                         </table>
                     </td>
@@ -139,6 +123,14 @@
         </form>
     </div>
     <div data-options="region:'center',border:false">
-        <table id="@(pageId)grid"></table>
+        
+        <div class="easyui-layout" data-options="fit:true" >
+            <div data-options="region:'east',border:false,title:'详情',split:true" style="width:400px;">
+                <div id="@(pageId)info" class="easyui-panel" data-options="fit:true,border:false" style="padding:5px;"></div>
+            </div>
+            <div data-options="region:'center',border:false">
+                <table id="@(pageId)grid"></table>
+            </div>
+        </div>
     </div>
 </div>

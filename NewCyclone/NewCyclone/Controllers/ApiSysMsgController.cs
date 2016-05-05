@@ -31,10 +31,19 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
-        /// 检索系统日志
+        /// 获取系统异常类型
+        /// </summary>
+        /// <returns></returns>
+        public List<VMComboBox> getExceptionErrorType() {
+            return SysHelp.getEnumList(typeof(SysExceptionType));
+        }
+
+        /// <summary>
+        /// 检索系统用户日志
         /// </summary>
         /// <param name="condtion"></param>
         /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
         public BaseResponse<BaseResponseList<SysUserLog>> searchUserLog(ViewModelMsgSearchUserLogReqeust condtion) {
             BaseResponse<BaseResponseList<SysUserLog>> result = new BaseResponse<BaseResponseList<SysUserLog>>();
             try
@@ -43,6 +52,24 @@ namespace NewCyclone.Controllers
             }
             catch (Exception e) {
                 SysException.getResult(result, e, condtion);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 检索系统异常日志
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        [SysAuthorize(RoleType = SysRolesType.后台)]
+        public BaseResponse<BaseResponseList<SysExcptionLog>> searchExceptionLog(WMMsgSearchExceptionLogRequest condtion) {
+            BaseResponse<BaseResponseList<SysExcptionLog>> result = new BaseResponse<BaseResponseList<SysExcptionLog>>();
+            try
+            {
+                result.result = SysExcptionLog.searchlog(condtion);
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, condtion);
             }
             return result;
         }

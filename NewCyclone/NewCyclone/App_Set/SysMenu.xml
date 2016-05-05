@@ -55,6 +55,9 @@
           </SysMenu>
           <SysMenu>
             <text>错误日志</text>
+            <url>
+              <![CDATA[/ManagerMsg/exceptionLog]]>
+            </url>
           </SysMenu>
         </children>
       </SysMenu>

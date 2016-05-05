@@ -45,3 +45,7 @@
         padding:5px;
         border:1px dashed #ccc;
     }
+    .formtable .t {
+        font-weight:bold;
+        background:#efefef;
+    }

@@ -55,7 +55,7 @@
             $.post("/api/ApiSysManagerUser/searchUserList", request, function (json) {
                 grid.datagrid("loaded");
                 console.log(json);
-                grid.datagrid("loadData", json.result);
+                gridLoadData(grid, json);
             });
         }
 

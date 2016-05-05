@@ -254,5 +254,19 @@ function showmsg(json, msg) {
     }
 }
 
+//通用加载网格
+function gridLoadData(Grid, json) {
+    if (json.code == 0) {
+        Grid.datagrid("loadData", json.result);
+    }
+    else {
+        Grid.datagrid({
+            columns: [[
+                { field: 'msg', title: '发生错误' }
+            ]]
+        });
+        Grid.datagrid("loadData", { total: 1, rows: [{ msg: json.msg }] });
+    }
+}
 
 

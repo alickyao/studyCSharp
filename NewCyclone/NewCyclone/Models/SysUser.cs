@@ -121,6 +121,11 @@ namespace NewCyclone.Models
         public string loginName { get; set; }
 
         /// <summary>
+        /// 显示名
+        /// </summary>
+        public string showName { get; set; }
+
+        /// <summary>
         /// 角色，用户的角色
         /// </summary>
         public string role { get; set; }
@@ -245,6 +250,20 @@ namespace NewCyclone.Models
                 setUserInfo(d);
                 //获取角色
                 this.roleInfo = SysRoles.sysRoles.Single(p => p.role.Equals(d.role));
+
+                SysRoles userrole = SysRoles.sysRoles.Single(p => p.role.Equals(this.role));
+                string showName = string.Empty;
+                if (userrole.cat == 0)
+                {
+                    //后台
+                    
+                    showName = db.Db_SysUserSet.OfType<Db_ManagerUser>().Single(p => p.loginName == this.loginName).fullName;
+                }
+                else {
+                    //其他,会员
+
+                }
+                this.showName = string.Format("{0}[{1},{2}]", showName, this.roleInfo.name, this.loginName);
             }
         }
 
