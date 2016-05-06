@@ -12,10 +12,9 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_SysTree
+    public partial class Db_CatTree : Db_SysTree
     {
-        public string Id { get; set; }
-        public string parentId { get; set; }
-        public System.DateTime createdOn { get; set; }
+        public string name { get; set; }
+        public int cat { get; set; }
     }
 }

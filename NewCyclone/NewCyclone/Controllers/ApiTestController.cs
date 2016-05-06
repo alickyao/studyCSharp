@@ -18,16 +18,13 @@ namespace NewCyclone.Controllers
         /// </summary>
         [HttpGet]
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<List<string>> test()
+        public BaseResponse<SysCatTree> test()
         {
-            BaseResponse<List<string>> r = new BaseResponse<List<string>>();
-            r.result = new List<string>();
-            foreach (var s in Enum.GetValues(typeof(SysMessageType))) {
-                int value = Convert.ToInt32(s);
-                string text = s.ToString();
-                r.result.Add(value.ToString() + text);
-            }
-            return r;
+            BaseResponse<SysCatTree> res = new BaseResponse<SysCatTree>();
+
+            res.result = new SysCatTree("xsgj_160506101615", 3);
+
+            return res;
         }
     }
 }

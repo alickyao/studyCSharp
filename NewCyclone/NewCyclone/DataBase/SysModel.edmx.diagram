@@ -24,7 +24,9 @@
         <EntityTypeShape EntityType="SysModel.Db_SysDoc" Width="1.5" PointX="0.5" PointY="6" />
         <EntityTypeShape EntityType="SysModel.Db_DocImgRote" Width="1.875" PointX="2.875" PointY="6" />
         <InheritanceConnector EntityType="SysModel.Db_DocImgRote" />
-        <EntityTypeShape EntityType="SysModel.Db_SysFile" Width="1.5" PointX="0.5" PointY="13.375" />
+        <EntityTypeShape EntityType="SysModel.Db_SysFile" Width="1.5" PointX="0.5" PointY="12.375" />
+        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="2.75" PointY="9.625" />
+        <InheritanceConnector EntityType="SysModel.Db_CatTree" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
