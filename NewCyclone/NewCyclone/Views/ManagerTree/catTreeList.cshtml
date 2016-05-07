@@ -1,0 +1,51 @@
+﻿
+@{
+    Layout = null;
+    string pageId = ViewBag.pageId;
+    string fun = ViewBag.fun;
+}
+
+<script>
+    $(document).ready(function () {
+
+        var grid = $("#@(pageId)grid");
+
+        function loadGrid() {
+            grid.treegrid("loading");
+            $.getJSON("/api/ApiSysCatTree/getTreeList?fun=@fun", function (json) {
+                console.log(json);
+                grid.treegrid("loaded");
+                grid.treegrid("loadData", json.result);
+            });
+        }
+
+        grid.treegrid({
+            rownumbers: false,
+            animate: true,
+            collapsible: true,
+            fitColumns: true,
+            striped: true,
+            fit: true,
+            idField: 'Id',
+            treeField: 'name',
+            lines: true,
+            columns: [[
+                    { title: 'Id', field: 'Id' },
+                    { title: '标题', field: 'name', editor: { type: "textbox", options: { required: true } } },
+                    {
+                        title: '创建时间', field: 'createOn', align: 'right', formatter: function (value) {
+                            if (value != null) {
+                                return new Date(value).Format("yyyy-MM-dd hh:mm");
+                            }
+                        }
+                    }
+            ]]
+        });
+        loadGrid();
+    });
+</script>
+<div class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'center',border:false">
+        <table id="@(pageId)grid"></table>
+    </div>
+</div>

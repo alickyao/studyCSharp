@@ -29,7 +29,17 @@
     </roles>
     <children>
       <SysMenu>
-        <text>分类管理</text>
+        <text>网站内容管理</text>
+        <children>
+          <SysMenu>
+            <text>内容分类管理</text>
+            <url><![CDATA[/ManagerTree/catTreeList?fun=webcms]]></url>
+          </SysMenu>
+          <SysMenu>
+            <text>内容管理</text>
+            <url><![CDATA[/ManagerTree/catTreeGrid?fun=webcms]]></url>
+          </SysMenu>
+        </children>
       </SysMenu>
     </children>
   </SysMenu>

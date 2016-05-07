@@ -564,6 +564,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ApiSysMsgController.cs" />
+    <Compile Include="Controllers\ApiSysCatTreeController.cs" />
     <Compile Include="Controllers\ApiSysUserController.cs" />
     <Compile Include="Controllers\ApiTestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -675,6 +676,8 @@
     <Content Include="Views\ManagerMsg\exceptionLog.cshtml" />
     <Content Include="Views\ManagerMsg\userLogInfo.cshtml" />
     <Content Include="Views\ManagerMsg\exceptionLogInfo.cshtml" />
+    <Content Include="Views\ManagerTree\catTreeList.cshtml" />
+    <Content Include="Views\ManagerTree\catTreeGrid.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

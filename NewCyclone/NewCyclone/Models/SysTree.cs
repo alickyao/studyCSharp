@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using NewCyclone.DataBase;
+using System.ComponentModel.DataAnnotations;
 
 namespace NewCyclone.Models
 {
@@ -181,13 +182,6 @@ namespace NewCyclone.Models
         protected abstract T getParent(SysTree<T> tree);
     }
 
-    public enum SysCatTreeType {
-        /// <summary>
-        /// 大类
-        /// </summary>
-        文档
-    }
-
     /// <summary>
     /// 分类树
     /// </summary>
@@ -196,10 +190,11 @@ namespace NewCyclone.Models
         /// 名称
         /// </summary>
         public string name { get; set; }
+
         /// <summary>
-        /// 类别
+        /// 所属的功能标示
         /// </summary>
-        public SysCatTreeType cat { get; set; }
+        public string fun { get; set; }
 
 
 
@@ -208,7 +203,7 @@ namespace NewCyclone.Models
             {
                 var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == Id);
                 this.name = d.name;
-                this.cat = (SysCatTreeType)d.cat;
+                this.fun = d.fun;
             }
         }
 
@@ -267,45 +262,111 @@ namespace NewCyclone.Models
         }
 
 
-        public static SysCatTree create(string name, SysCatTreeType cat, string parentId = null) {
+        /// <summary>
+        /// 创建/编辑
+        /// </summary>
+        /// <param name="condtion"></param>
+        /// <returns></returns>
+        public static SysCatTree edit(VMTreeEditCatTreeRequest condtion) {
+            SysValidata.valiData(condtion);//验证请求
+
+            //自定义验证当添加根节点时 参数中的 fun必填
+            if (string.IsNullOrEmpty(condtion._parentId) && string.IsNullOrEmpty(condtion.fun)) {
+                throw new SysException("添加/编辑根节点时，参数fun必填", condtion);
+            }
+
+            if (string.IsNullOrEmpty(condtion.Id))
+            {
+                //新增
+                using (var db = new SysModelContainer())
+                {
+                    Db_CatTree d = new Db_CatTree()
+                    {
+                        fun = condtion.fun,
+                        createdOn = DateTime.Now,
+                        Id = SysHelp.getNewId(),
+                        name = condtion.name,
+                        parentId = condtion._parentId
+                    };
+                    Db_SysTree newrow = db.Db_SysTreeSet.Add(d);
+                    db.SaveChanges();
+                    SysCatTree newtree = new SysCatTree(newrow.Id);
+                    return newtree;
+                }
+            }
+            else {
+                //编辑
+                SysCatTree tree = new SysCatTree(condtion.Id, false);
+                tree.name = condtion.name;
+                tree._parentId = condtion._parentId;
+                tree.fun = condtion.fun;
+                tree.save();
+                tree = new SysCatTree(condtion.Id, false);
+                return tree;
+            }
+        }
+        /// <summary>
+        /// 保存操作
+        /// </summary>
+        /// <returns></returns>
+        private void save() {
             using (var db = new SysModelContainer()) {
-                Db_CatTree d = new Db_CatTree() {
-                    cat = (int)cat,
-                    createdOn = DateTime.Now,
-                    Id = SysHelp.getNewId(),
-                    name = name,
-                    parentId = parentId
-                };
-                Db_SysTree newrow = db.Db_SysTreeSet.Add(d);
+                var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == this.Id);
+                d.name = this.name;
+                d.fun = this.fun;
+                d.parentId = this._parentId;
                 db.SaveChanges();
-                SysCatTree newtree = new SysCatTree(newrow.Id);
-                return newtree;
             }
         }
 
-        public static List<SysCatTree> getlist()
-        {
+        /// <summary>
+        /// 根据系统功能标示获取分类树集合（树形）
+        /// </summary>
+        /// <param name="fun">系统功能名称</param>
+        /// <returns></returns>
+        public static List<SysCatTree> getTreeList(string fun) {
             List<SysCatTree> result = new List<SysCatTree>();
-
             using (var db = new SysModelContainer()) {
-                var res = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
-                          where (c.parentId == null || c.parentId=="")
-                          select new SysCatTree(c.Id, false)
+                result = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
+                           where (c.parentId == null || c.parentId == "")
+                           && (c.fun == fun)
+                           select new SysCatTree(c.Id, true)
                           ).ToList();
-                
-                foreach (var t in res) {
-                    result.Add(t);
-                    var cl = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
-                             where t.childrenIdList.Contains(c.Id)
-                             select new SysCatTree(c.Id, false)
-                          ).ToList();
-                    if (cl.Count > 0)
-                    {
-                        result.AddRange(cl);
-                    }
-                }
             }
             return result;
         }
+    }
+
+
+    /// <summary>
+    /// 创建/编辑分类树请求
+    /// </summary>
+    public class VMTreeEditCatTreeRequest {
+
+        /// <summary>
+        /// 编辑时需要传入的节点的ID
+        /// </summary>
+        [StringLength(50)]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// 节点的名称
+        /// </summary>
+        [Required(ErrorMessage ="节点名称不能为空")]
+        public string name { get; set; }
+
+        /// <summary>
+        /// 当前树所属的功能界面节点名称
+        /// 当添加的是根节点是，该值是必须的
+        /// </summary>
+        [StringLength(50)]
+        public string fun { get; set; }
+
+        /// <summary>
+        /// 父节点的ID，如果是创建的根节点该值为空
+        /// </summary>
+        [StringLength(50)]
+        public string _parentId { get; set; }
+
     }
 }

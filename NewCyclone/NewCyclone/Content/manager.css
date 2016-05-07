@@ -20,7 +20,6 @@
     }
     #MainTitle #TopNav {
         float:right;
-        padding-right:2px;
         padding-top:2px;
     }
         #MainTitle #TopNav #MainSearch {
@@ -30,7 +29,7 @@
     #MainTitle #topMenulist {
         padding: 5px; border:1px solid #dedede; border-bottom:none; border-right:none;
         border-top-left-radius:3px;
-        background-color:#efefef
+        background-color:#fcfcfc
     }
 
 .dialogwin {

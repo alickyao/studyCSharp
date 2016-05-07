@@ -35,6 +35,7 @@ namespace NewCyclone.Controllers
             }
         }
     }
+
     /// <summary>
     /// 后台系统界面控制登陆退出与主界面
     /// </summary>
@@ -118,7 +119,7 @@ namespace NewCyclone.Controllers
         /// <param name="query">查询参数</param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null,string viewset = "default")
+        public ActionResult userList(ViewModelSearchUserBaseRequest query, string pageId = null, string viewset = "default")
         {
             setPageId(pageId);
             ViewBag.query = query;
@@ -132,7 +133,7 @@ namespace NewCyclone.Controllers
         /// <param name="pageId"></param>
         /// <returns></returns>
         [Authorize(Roles = "admin")]
-        public ActionResult editUser(string loginName,string pageId = null) {
+        public ActionResult editUser(string loginName, string pageId = null) {
             setPageId(pageId);
             ViewBag.loginName = loginName;
             return View();
@@ -152,7 +153,7 @@ namespace NewCyclone.Controllers
         /// <param name="viewset"></param>
         /// <returns></returns>
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public ActionResult userLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId,string viewset = "default") {
+        public ActionResult userLog(ViewModelMsgSearchUserLogReqeust condtion, string pageId, string viewset = "default") {
             setPageId(pageId);
             ViewBag.condtion = condtion;
             ViewModelSearchUserBaseRequest searchUserRequest = new ViewModelSearchUserBaseRequest();
@@ -196,5 +197,37 @@ namespace NewCyclone.Controllers
             return View();
         }
 
+    }
+
+    /// <summary>
+    /// 分类与树
+    /// </summary>
+    public class ManagerTreeController : MBaseController {
+
+        /// <summary>
+        /// 分类树网格
+        /// </summary>
+        /// <param name="fun">功能模块标示</param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult catTreeList(string fun, string pageId = null)
+        {
+            setPageId(pageId);
+            ViewBag.fun = fun;
+            return View();
+        }
+
+        /// <summary>
+        /// 左分类树又网格界面
+        /// </summary>
+        /// <param name="fun">功能模块标示</param>
+        /// <param name="pageId"></param>
+        /// <returns></returns>
+        public ActionResult catTreeGrid(string fun, string pageId = null)
+        {
+            setPageId(pageId);
+            ViewBag.fun = fun;
+            return View();
+        }
     }
 }

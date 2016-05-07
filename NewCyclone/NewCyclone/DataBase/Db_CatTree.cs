@@ -15,6 +15,6 @@ namespace NewCyclone.DataBase
     public partial class Db_CatTree : Db_SysTree
     {
         public string name { get; set; }
-        public int cat { get; set; }
+        public string fun { get; set; }
     }
 }

@@ -62,12 +62,12 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="Db_SysUser_loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="logType" Type="int" Nullable="false" />
           <Property Name="fkId" Type="nvarchar" MaxLength="50" />
           <Property Name="ip" Type="varchar" MaxLength="50" />
           <Property Name="device" Type="varchar(max)" />
+          <Property Name="Id" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_SysTreeSet">
           <Key>
@@ -82,7 +82,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="name" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="cat" Type="int" Nullable="false" />
+          <Property Name="fun" Type="varchar" MaxLength="50" />
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_SysUserSet">
@@ -113,6 +113,20 @@
           <Property Name="nickName" Type="nvarchar" MaxLength="50" />
           <Property Name="loginName" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Db_CatTree_inherits_Db_SysTree">
+          <End Role="Db_SysTreeSet" Type="Self.Db_SysTreeSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Db_SysTreeSet_Db_CatTree" Type="Self.Db_SysTreeSet_Db_CatTree" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Db_SysTreeSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Db_SysTreeSet_Db_CatTree">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Db_DocImgRote_inherits_Db_SysDoc">
           <End Role="Db_SysDocSet" Type="Self.Db_SysDocSet" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -195,6 +209,10 @@
           <EntitySet Name="Db_SysUserSet" EntityType="Self.Db_SysUserSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="Self.Db_SysUserSet_Db_ManagerUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_SysUserSet_Db_MemberUser" EntityType="Self.Db_SysUserSet_Db_MemberUser" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Db_CatTree_inherits_Db_SysTree" Association="Self.FK_Db_CatTree_inherits_Db_SysTree">
+            <End Role="Db_SysTreeSet" EntitySet="Db_SysTreeSet" />
+            <End Role="Db_SysTreeSet_Db_CatTree" EntitySet="Db_SysTreeSet_Db_CatTree" />
+          </AssociationSet>
           <AssociationSet Name="FK_Db_DocImgRote_inherits_Db_SysDoc" Association="Self.FK_Db_DocImgRote_inherits_Db_SysDoc">
             <End Role="Db_SysDocSet" EntitySet="Db_SysDocSet" />
             <End Role="Db_SysDocSet_Db_DocImgRote" EntitySet="Db_SysDocSet_Db_DocImgRote" />
@@ -311,7 +329,7 @@
         </EntityType>
         <EntityType Name="Db_CatTree" BaseType="SysModel.Db_SysTree" >
           <Property Name="name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="cat" Type="Int32" Nullable="false" />
+          <Property Name="fun" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -386,9 +404,9 @@
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_CatTree)">
         <MappingFragment StoreEntitySet="Db_SysTreeSet_Db_CatTree">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="fun" ColumnName="fun" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="name" ColumnName="name" />
-          <ScalarProperty Name="cat" ColumnName="cat" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

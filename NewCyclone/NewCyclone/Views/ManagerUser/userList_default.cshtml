@@ -53,8 +53,8 @@
             console.log(request);
             grid.datagrid("loading");
             $.post("/api/ApiSysManagerUser/searchUserList", request, function (json) {
-                grid.datagrid("loaded");
                 console.log(json);
+                grid.datagrid("loaded");
                 gridLoadData(grid, json);
             });
         }
@@ -110,11 +110,11 @@
                     }
                 },
                 {
-                    field: 'isDisabled', title: '禁用',align:'center', formatter(value, row, index) {
+                    field: 'isDisabled', title: '禁用', align: 'center', formatter: function (value, row, index) {
                         return value ? "是" : "否";
                     },
                     styler: function (value, row, index) {
-                        return value ? "color:red" : "";
+                        return value ? "color:Red" : "";
                     }
                 }
             ]],
