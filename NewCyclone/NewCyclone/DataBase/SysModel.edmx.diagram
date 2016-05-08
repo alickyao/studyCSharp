@@ -17,13 +17,20 @@
         <InheritanceConnector EntityType="SysModel.Db_SysExceptionLog" />
         <EntityTypeShape EntityType="SysModel.Db_SysUserLog" Width="2.25" PointX="5.75" PointY="0.5" />
         <InheritanceConnector EntityType="SysModel.Db_SysUserLog" />
-        <EntityTypeShape EntityType="SysModel.Db_SysTree" Width="1.5" PointX="0.5" PointY="9.625" />
+        <EntityTypeShape EntityType="SysModel.Db_SysTree" Width="1.5" PointX="0.5" PointY="5.875" />
         <EntityTypeShape EntityType="SysModel.Db_SysMenu" Width="1.5" PointX="0.5" PointY="4" />
         <InheritanceConnector EntityType="SysModel.Db_SysMenu" />
         <AssociationConnector Association="SysModel.Db_SysRoleDb_SysMenu" />
-        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="2.75" PointY="9.625" />
+        <EntityTypeShape EntityType="SysModel.Db_CatTree" Width="1.5" PointX="2.75" PointY="5.875" />
         <InheritanceConnector EntityType="SysModel.Db_CatTree" />
-        <EntityTypeShape EntityType="SysModel.Db_SysFileSet" Width="1.5" PointX="0.5" PointY="12.125" />
+        <EntityTypeShape EntityType="SysModel.Db_SysFileSet" Width="1.5" PointX="0.5" PointY="8.375" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDoc" Width="1.5" PointX="5.5" PointY="8.375" />
+        <EntityTypeShape EntityType="SysModel.Db_DocCat" Width="1.5" PointX="3.375" PointY="8.375" />
+        <AssociationConnector Association="SysModel.Db_SysDocDb_DocCat" />
+        <EntityTypeShape EntityType="SysModel.Db_DocWebCms" Width="1.5" PointX="7.75" PointY="8.375" />
+        <InheritanceConnector EntityType="SysModel.Db_DocWebCms" />
+        <EntityTypeShape EntityType="SysModel.Db_DocFile" Width="1.5" PointX="3.375" PointY="10.75" />
+        <AssociationConnector Association="SysModel.Db_SysDocDb_DocFile" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
