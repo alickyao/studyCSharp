@@ -136,7 +136,7 @@
                             $.messager.alert('错误', "请先选中一行", 'error');
                         }
                         else {
-                            $.messager.confirm('Confirm', '确定删除用户:'+row.fullName+"?", function (r) {
+                            $.messager.confirm('请确认', '确定删除用户:'+row.fullName+"?", function (r) {
                                 if (r) {
                                     $.getJSON("/api/ApiSysManagerUser/delete?loginName=" + row.loginName, function (json) {
                                         showmsg(json);

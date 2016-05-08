@@ -16,5 +16,6 @@ namespace NewCyclone.DataBase
     {
         public string name { get; set; }
         public string fun { get; set; }
+        public Nullable<int> sort { get; set; }
     }
 }

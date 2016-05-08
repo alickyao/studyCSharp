@@ -35,6 +35,11 @@ namespace NewCyclone.Models
         /// </summary>
         public DateTime createOn { get; internal set; }
 
+        /// <summary>
+        /// 是否已被标记为删除
+        /// </summary>
+        internal bool isDeleted { get; set; }
+
         private List<string> _childrenIdList = new List<string>();
 
         /// <summary>
@@ -83,6 +88,7 @@ namespace NewCyclone.Models
                 this.Id = d.Id;
                 this._parentId = d.parentId;
                 this.createOn = d.createdOn;
+                this.isDeleted = d.isDeleted;
             }
             if (!string.IsNullOrEmpty(this._parentId))
             {
@@ -169,6 +175,17 @@ namespace NewCyclone.Models
         }
 
         /// <summary>
+        /// 标记为删除状态
+        /// </summary>
+        public void delete() {
+            using (var db = new SysModelContainer()) {
+                var d = db.Db_SysTreeSet.Single(p => p.Id == this.Id);
+                d.isDeleted = true;
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// 实现递归获取子节点
         /// </summary>
         /// <param name="tree">父节点</param>
@@ -196,7 +213,10 @@ namespace NewCyclone.Models
         /// </summary>
         public string fun { get; set; }
 
-
+        /// <summary>
+        /// 排序依据
+        /// </summary>
+        public Nullable<int> sort { get; set; }
 
         private void setInfo() {
             using (var db = new SysModelContainer())
@@ -204,6 +224,7 @@ namespace NewCyclone.Models
                 var d = db.Db_SysTreeSet.OfType<Db_CatTree>().Single(p => p.Id == Id);
                 this.name = d.name;
                 this.fun = d.fun;
+                this.sort = d.sort;
             }
         }
 
@@ -242,7 +263,9 @@ namespace NewCyclone.Models
                 using (var db = new SysModelContainer())
                 {
                     List<SysCatTree> child = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
-                                              where c.parentId == tree.Id
+                                              where (c.parentId == tree.Id)
+                                              && (!c.isDeleted)
+                                              orderby c.sort descending, c.name ascending
                                               select new SysCatTree(c.Id, maxDep, dep)).ToList();
                     return child;
                 }
@@ -286,7 +309,9 @@ namespace NewCyclone.Models
                         createdOn = DateTime.Now,
                         Id = SysHelp.getNewId(),
                         name = condtion.name,
-                        parentId = condtion._parentId
+                        parentId = condtion._parentId,
+                        isDeleted = false,
+                        sort = condtion.sort
                     };
                     Db_SysTree newrow = db.Db_SysTreeSet.Add(d);
                     db.SaveChanges();
@@ -300,6 +325,7 @@ namespace NewCyclone.Models
                 tree.name = condtion.name;
                 tree._parentId = condtion._parentId;
                 tree.fun = condtion.fun;
+                tree.sort = condtion.sort;
                 tree.save();
                 tree = new SysCatTree(condtion.Id, false);
                 return tree;
@@ -315,6 +341,7 @@ namespace NewCyclone.Models
                 d.name = this.name;
                 d.fun = this.fun;
                 d.parentId = this._parentId;
+                d.sort = this.sort;
                 db.SaveChanges();
             }
         }
@@ -328,9 +355,11 @@ namespace NewCyclone.Models
             List<SysCatTree> result = new List<SysCatTree>();
             using (var db = new SysModelContainer()) {
                 result = (from c in db.Db_SysTreeSet.OfType<Db_CatTree>().AsEnumerable()
-                           where (c.parentId == null || c.parentId == "")
-                           && (c.fun == fun)
-                           select new SysCatTree(c.Id, true)
+                          where (c.parentId == null || c.parentId == "")
+                          && (c.fun == fun)
+                          && (!c.isDeleted)
+                          orderby c.sort descending, c.name ascending
+                          select new SysCatTree(c.Id, true)
                           ).ToList();
             }
             return result;
@@ -368,5 +397,9 @@ namespace NewCyclone.Models
         [StringLength(50)]
         public string _parentId { get; set; }
 
+        /// <summary>
+        /// 排序依据
+        /// </summary>
+        public Nullable<int> sort { get; set; }
     }
 }

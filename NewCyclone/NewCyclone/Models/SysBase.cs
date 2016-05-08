@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Http.Controllers;
+using System.Xml.Serialization;
 
 namespace NewCyclone.Models
 {
@@ -236,6 +238,29 @@ namespace NewCyclone.Models
                 });
             }
             return result;
+        }
+
+        /// <summary>
+        /// 将指定的配置文件转换为对象
+        /// </summary>
+        /// <param name="filename">配置文件名，在App_Set文件夹中</param>
+        /// <returns></returns>
+        public static T getSysSetList<T>(string filename) {
+            string path = HttpContext.Current.Server.MapPath("/App_Set/" + filename);
+            StreamReader file = new StreamReader(path);
+            try
+            {
+                XmlSerializer reader = new XmlSerializer(typeof(T));
+                T t = (T)reader.Deserialize(file);
+                return t;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally {
+                file.Close();
+            }
         }
     }
 }

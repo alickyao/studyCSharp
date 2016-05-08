@@ -18,12 +18,10 @@ namespace NewCyclone.Controllers
         /// </summary>
         [HttpGet]
         [SysAuthorize(RoleType = SysRolesType.后台)]
-        public BaseResponse<SysCatTree> test()
+        public BaseResponse<List<VMComboBox>> test()
         {
-            BaseResponse<SysCatTree> res = new BaseResponse<SysCatTree>();
-
-            res.result = new SysCatTree("xsgj_160506101615", 3);
-
+            BaseResponse<List<VMComboBox>> res = new BaseResponse<List<VMComboBox>>();
+            res.result = SysHelp.getSysSetList<List<VMComboBox>>("FunWebCms.xml");
             return res;
         }
     }

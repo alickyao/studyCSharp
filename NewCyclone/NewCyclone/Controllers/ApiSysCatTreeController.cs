@@ -39,6 +39,27 @@ namespace NewCyclone.Controllers
         }
 
         /// <summary>
+        /// 将树的某个节点标记为删除
+        /// </summary>
+        /// <param name="Id">节点的ID</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet]
+        public BaseResponse delCatTree(string Id) {
+            BaseResponse result = new BaseResponse();
+            try
+            {
+                SysCatTree tree = new SysCatTree(Id);
+                tree.delete();
+                result.msg = "删除成功";
+            }
+            catch (Exception e) {
+                result = SysException.getResult(result, e, Id);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 根据功能标示获取分类树集合
         /// </summary>
         /// <param name="fun">功能标示符</param>

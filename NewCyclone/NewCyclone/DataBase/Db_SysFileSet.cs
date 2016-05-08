@@ -12,10 +12,11 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_DocImgRote : Db_SysDoc
+    public partial class Db_SysFileSet
     {
-        public string width { get; set; }
-        public string height { get; set; }
-        public string second { get; set; }
+        public string Id { get; set; }
+        public System.DateTime createdOn { get; set; }
+        public string filePath { get; set; }
+        public Nullable<int> sort { get; set; }
     }
 }

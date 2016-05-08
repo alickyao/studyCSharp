@@ -17,5 +17,6 @@ namespace NewCyclone.DataBase
         public string Id { get; set; }
         public string parentId { get; set; }
         public System.DateTime createdOn { get; set; }
+        public bool isDeleted { get; set; }
     }
 }

@@ -5,37 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="SysModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Db_SysDocSet">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="modifiedOn" Type="datetime" Nullable="false" />
-          <Property Name="isDeleted" Type="bit" Nullable="false" />
-          <Property Name="caption" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="discribe" Type="nvarchar(max)" />
-          <Property Name="text" Type="nvarchar(max)" />
-          <Property Name="headImg" Type="nvarchar(max)" />
-          <Property Name="cat" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="Db_SysDocSet_Db_DocImgRote">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="width" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="height" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="second" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
         <EntityType Name="Db_SysFileSet">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="fId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="createdOn" Type="datetime" Nullable="false" />
-          <Property Name="url" Type="varchar(max)" Nullable="false" />
+          <Property Name="filePath" Type="varchar(max)" Nullable="false" />
           <Property Name="sort" Type="int" />
         </EntityType>
         <EntityType Name="Db_SysMsgSet">
@@ -76,6 +52,7 @@
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="parentId" Type="varchar" MaxLength="50" />
           <Property Name="createdOn" Type="datetime" Nullable="false" />
+          <Property Name="isDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_SysTreeSet_Db_CatTree">
           <Key>
@@ -83,6 +60,7 @@
           </Key>
           <Property Name="name" Type="nvarchar(max)" Nullable="false" />
           <Property Name="fun" Type="varchar" MaxLength="50" />
+          <Property Name="sort" Type="int" />
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Db_SysUserSet">
@@ -123,20 +101,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="Db_SysTreeSet_Db_CatTree">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Db_DocImgRote_inherits_Db_SysDoc">
-          <End Role="Db_SysDocSet" Type="Self.Db_SysDocSet" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Db_SysDocSet_Db_DocImgRote" Type="Self.Db_SysDocSet_Db_DocImgRote" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="Db_SysDocSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Db_SysDocSet_Db_DocImgRote">
               <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
@@ -198,8 +162,6 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="SysModelStoreContainer">
-          <EntitySet Name="Db_SysDocSet" EntityType="Self.Db_SysDocSet" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Db_SysDocSet_Db_DocImgRote" EntityType="Self.Db_SysDocSet_Db_DocImgRote" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_SysFileSet" EntityType="Self.Db_SysFileSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_SysMsgSet" EntityType="Self.Db_SysMsgSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Db_SysMsgSet_Db_SysExceptionLog" EntityType="Self.Db_SysMsgSet_Db_SysExceptionLog" Schema="dbo" store:Type="Tables" />
@@ -212,10 +174,6 @@
           <AssociationSet Name="FK_Db_CatTree_inherits_Db_SysTree" Association="Self.FK_Db_CatTree_inherits_Db_SysTree">
             <End Role="Db_SysTreeSet" EntitySet="Db_SysTreeSet" />
             <End Role="Db_SysTreeSet_Db_CatTree" EntitySet="Db_SysTreeSet_Db_CatTree" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Db_DocImgRote_inherits_Db_SysDoc" Association="Self.FK_Db_DocImgRote_inherits_Db_SysDoc">
-            <End Role="Db_SysDocSet" EntitySet="Db_SysDocSet" />
-            <End Role="Db_SysDocSet_Db_DocImgRote" EntitySet="Db_SysDocSet_Db_DocImgRote" />
           </AssociationSet>
           <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_SysUser" Association="Self.FK_Db_ManagerUser_inherits_Db_SysUser">
             <End Role="Db_SysUserSet" EntitySet="Db_SysUserSet" />
@@ -242,8 +200,7 @@
           <EntitySet Name="Db_SysUserSet" EntityType="SysModel.Db_SysUser" />
           <EntitySet Name="Db_SysMsgSet" EntityType="SysModel.Db_SysMsg" />
           <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Db_SysTree" />
-          <EntitySet Name="Db_SysDocSet" EntityType="SysModel.Db_SysDoc" />
-          <EntitySet Name="Db_SysFileSet" EntityType="SysModel.Db_SysFile" />
+          <EntitySet Name="Db_SysFileSet" EntityType="SysModel.Db_SysFileSet" />
           </EntityContainer>
         <EntityType Name="Db_SysUser" Abstract="true">
           <Key>
@@ -297,39 +254,21 @@
           <Property Name="Id" Type="String" Nullable="false" annotation:StoreGeneratedPattern="None" MaxLength="50" Unicode="false" FixedLength="false" />
           <Property Name="parentId" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
           <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
-        </EntityType>
-        <EntityType Name="Db_SysDoc">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="modifiedOn" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="isDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="caption" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="discribe" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="headImg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="cat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Db_DocImgRote" BaseType="SysModel.Db_SysDoc" >
-          <Property Name="width" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="height" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Name="second" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
-        </EntityType>
-        <EntityType Name="Db_SysFile">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="fId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="url" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="sort" Type="Int32" />
         </EntityType>
         <EntityType Name="Db_CatTree" BaseType="SysModel.Db_SysTree" >
           <Property Name="name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Name="fun" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sort" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Db_SysFileSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="createdOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="filePath" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="sort" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -397,53 +336,31 @@
     <EntitySetMapping Name="Db_SysTreeSet">
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysTree)">
         <MappingFragment StoreEntitySet="Db_SysTreeSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="parentId" ColumnName="parentId" />
           <ScalarProperty Name="createdOn" ColumnName="createdOn" />
         </MappingFragment>
       </EntityTypeMapping>
       <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_CatTree)">
         <MappingFragment StoreEntitySet="Db_SysTreeSet_Db_CatTree">
-          <ScalarProperty Name="fun" ColumnName="fun" />
+          <ScalarProperty Name="sort" ColumnName="sort" />
+                <ScalarProperty Name="fun" ColumnName="fun" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="name" ColumnName="name" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Db_SysDocSet">
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysDoc)">
-        <MappingFragment StoreEntitySet="Db_SysDocSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="createdOn" ColumnName="createdOn" />
-          <ScalarProperty Name="modifiedOn" ColumnName="modifiedOn" />
-          <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
-          <ScalarProperty Name="caption" ColumnName="caption" />
-          <ScalarProperty Name="discribe" ColumnName="discribe" />
-          <ScalarProperty Name="text" ColumnName="text" />
-          <ScalarProperty Name="headImg" ColumnName="headImg" />
-          <ScalarProperty Name="cat" ColumnName="cat" />
-        </MappingFragment>
-      </EntityTypeMapping>
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocImgRote)">
-        <MappingFragment StoreEntitySet="Db_SysDocSet_Db_DocImgRote">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="width" ColumnName="width" />
-          <ScalarProperty Name="height" ColumnName="height" />
-          <ScalarProperty Name="second" ColumnName="second" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Db_SysFileSet">
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysFile)">
-        <MappingFragment StoreEntitySet="Db_SysFileSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="fId" ColumnName="fId" />
-          <ScalarProperty Name="createdOn" ColumnName="createdOn" />
-          <ScalarProperty Name="url" ColumnName="url" />
-          <ScalarProperty Name="sort" ColumnName="sort" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
+          <EntitySetMapping Name="Db_SysFileSet">
+            <EntityTypeMapping TypeName="SysModel.Db_SysFileSet">
+              <MappingFragment StoreEntitySet="Db_SysFileSet">
+                <ScalarProperty Name="sort" ColumnName="sort" />
+                <ScalarProperty Name="filePath" ColumnName="filePath" />
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
