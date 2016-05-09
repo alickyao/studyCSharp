@@ -17,8 +17,8 @@ namespace NewCyclone.DataBase
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Db_SysDoc()
         {
-            this.Db_DocCat = new HashSet<Db_DocCat>();
-            this.Db_DocFile = new HashSet<Db_DocFile>();
+            this.Db_DocCat = new HashSet<Db_SysDocCat>();
+            this.Db_DocFile = new HashSet<Db_SysDocFile>();
         }
     
         public string Id { get; set; }
@@ -30,8 +30,8 @@ namespace NewCyclone.DataBase
         public string caption { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_DocCat> Db_DocCat { get; set; }
+        public virtual ICollection<Db_SysDocCat> Db_DocCat { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Db_DocFile> Db_DocFile { get; set; }
+        public virtual ICollection<Db_SysDocFile> Db_DocFile { get; set; }
     }
 }

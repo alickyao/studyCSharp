@@ -30,7 +30,7 @@ namespace NewCyclone.DataBase
         public virtual DbSet<Db_SysTree> Db_SysTreeSet { get; set; }
         public virtual DbSet<Db_SysFileSet> Db_SysFileSet { get; set; }
         public virtual DbSet<Db_SysDoc> Db_SysDocSet { get; set; }
-        public virtual DbSet<Db_DocCat> Db_DocCatSet { get; set; }
-        public virtual DbSet<Db_DocFile> Db_DocFileSet { get; set; }
+        public virtual DbSet<Db_SysDocCat> Db_SysDocCatSet { get; set; }
+        public virtual DbSet<Db_SysDocFile> Db_SysDocFileSet { get; set; }
     }
 }

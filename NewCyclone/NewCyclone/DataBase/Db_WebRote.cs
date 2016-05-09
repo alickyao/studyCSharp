@@ -12,12 +12,10 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_DocCat
+    public partial class Db_WebRote : Db_DocWeb
     {
-        public int Id { get; set; }
-        public string Db_SysDocId { get; set; }
-        public string Db_CatTreeId { get; set; }
-    
-        public virtual Db_SysDoc Db_SysDoc { get; set; }
+        public int imgWidth { get; set; }
+        public int imgHeight { get; set; }
+        public int waitSecond { get; set; }
     }
 }

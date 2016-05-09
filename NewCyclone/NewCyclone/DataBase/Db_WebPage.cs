@@ -12,12 +12,10 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_DocFile
+    public partial class Db_WebPage : Db_DocWeb
     {
-        public int Id { get; set; }
-        public string Db_SysDocId { get; set; }
-        public string Db_SysFileId { get; set; }
-    
-        public virtual Db_SysDoc Db_SysDoc { get; set; }
+        public string seoTitle { get; set; }
+        public string seoKeyWords { get; set; }
+        public string content { get; set; }
     }
 }

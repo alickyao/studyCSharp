@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 05/09/2016 00:07:00
--- Generated from EDMX file: E:\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
+-- Date Created: 05/09/2016 09:46:51
+-- Generated from EDMX file: D:\project\git\studyCSharp\NewCyclone\NewCyclone\DataBase\SysModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -38,8 +38,14 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_Db_CatTree_inherits_Db_SysTree]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Db_SysTreeSet_Db_CatTree] DROP CONSTRAINT [FK_Db_CatTree_inherits_Db_SysTree];
 GO
-IF OBJECT_ID(N'[dbo].[FK_Db_DocWebCms_inherits_Db_SysDoc]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWebCms] DROP CONSTRAINT [FK_Db_DocWebCms_inherits_Db_SysDoc];
+IF OBJECT_ID(N'[dbo].[FK_Db_DocWeb_inherits_Db_SysDoc]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWeb] DROP CONSTRAINT [FK_Db_DocWeb_inherits_Db_SysDoc];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WebPage_inherits_Db_DocWeb]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_WebPage] DROP CONSTRAINT [FK_Db_WebPage_inherits_Db_DocWeb];
+GO
+IF OBJECT_ID(N'[dbo].[FK_Db_WebRote_inherits_Db_DocWeb]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Db_SysDocSet_Db_WebRote] DROP CONSTRAINT [FK_Db_WebRote_inherits_Db_DocWeb];
 GO
 
 -- --------------------------------------------------
@@ -82,8 +88,14 @@ GO
 IF OBJECT_ID(N'[dbo].[Db_SysTreeSet_Db_CatTree]', 'U') IS NOT NULL
     DROP TABLE [dbo].[Db_SysTreeSet_Db_CatTree];
 GO
-IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocWebCms]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Db_SysDocSet_Db_DocWebCms];
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_DocWeb]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_DocWeb];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WebPage]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_WebPage];
+GO
+IF OBJECT_ID(N'[dbo].[Db_SysDocSet_Db_WebRote]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Db_SysDocSet_Db_WebRote];
 GO
 
 -- --------------------------------------------------
@@ -141,16 +153,16 @@ CREATE TABLE [dbo].[Db_SysDocSet] (
 );
 GO
 
--- Creating table 'Db_DocCatSet'
-CREATE TABLE [dbo].[Db_DocCatSet] (
+-- Creating table 'Db_SysDocCatSet'
+CREATE TABLE [dbo].[Db_SysDocCatSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Db_SysDocId] nvarchar(50)  NOT NULL,
     [Db_CatTreeId] nvarchar(50)  NOT NULL
 );
 GO
 
--- Creating table 'Db_DocFileSet'
-CREATE TABLE [dbo].[Db_DocFileSet] (
+-- Creating table 'Db_SysDocFileSet'
+CREATE TABLE [dbo].[Db_SysDocFileSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [Db_SysDocId] nvarchar(50)  NOT NULL,
     [Db_SysFileId] nvarchar(50)  NOT NULL
@@ -204,9 +216,28 @@ CREATE TABLE [dbo].[Db_SysTreeSet_Db_CatTree] (
 );
 GO
 
--- Creating table 'Db_SysDocSet_Db_DocWebCms'
-CREATE TABLE [dbo].[Db_SysDocSet_Db_DocWebCms] (
-    [fun] nvarchar(50)  NOT NULL,
+-- Creating table 'Db_SysDocSet_Db_DocWeb'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_DocWeb] (
+    [fun] nvarchar(max)  NOT NULL,
+    [describe] nvarchar(max)  NOT NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_SysDocSet_Db_WebPage'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_WebPage] (
+    [seoTitle] nvarchar(max)  NOT NULL,
+    [seoKeyWords] nvarchar(max)  NOT NULL,
+    [content] nvarchar(max)  NOT NULL,
+    [Id] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'Db_SysDocSet_Db_WebRote'
+CREATE TABLE [dbo].[Db_SysDocSet_Db_WebRote] (
+    [imgWidth] int  NOT NULL,
+    [imgHeight] int  NOT NULL,
+    [waitSecond] int  NOT NULL,
     [Id] nvarchar(50)  NOT NULL
 );
 GO
@@ -245,15 +276,15 @@ ADD CONSTRAINT [PK_Db_SysDocSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Db_DocCatSet'
-ALTER TABLE [dbo].[Db_DocCatSet]
-ADD CONSTRAINT [PK_Db_DocCatSet]
+-- Creating primary key on [Id] in table 'Db_SysDocCatSet'
+ALTER TABLE [dbo].[Db_SysDocCatSet]
+ADD CONSTRAINT [PK_Db_SysDocCatSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Db_DocFileSet'
-ALTER TABLE [dbo].[Db_DocFileSet]
-ADD CONSTRAINT [PK_Db_DocFileSet]
+-- Creating primary key on [Id] in table 'Db_SysDocFileSet'
+ALTER TABLE [dbo].[Db_SysDocFileSet]
+ADD CONSTRAINT [PK_Db_SysDocFileSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -287,9 +318,21 @@ ADD CONSTRAINT [PK_Db_SysTreeSet_Db_CatTree]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
--- Creating primary key on [Id] in table 'Db_SysDocSet_Db_DocWebCms'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWebCms]
-ADD CONSTRAINT [PK_Db_SysDocSet_Db_DocWebCms]
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_DocWeb'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWeb]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_DocWeb]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WebPage'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WebPage]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_WebPage]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'Db_SysDocSet_Db_WebRote'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WebRote]
+ADD CONSTRAINT [PK_Db_SysDocSet_Db_WebRote]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -297,8 +340,8 @@ GO
 -- Creating all FOREIGN KEY constraints
 -- --------------------------------------------------
 
--- Creating foreign key on [Db_SysDocId] in table 'Db_DocCatSet'
-ALTER TABLE [dbo].[Db_DocCatSet]
+-- Creating foreign key on [Db_SysDocId] in table 'Db_SysDocCatSet'
+ALTER TABLE [dbo].[Db_SysDocCatSet]
 ADD CONSTRAINT [FK_Db_SysDocDb_DocCat]
     FOREIGN KEY ([Db_SysDocId])
     REFERENCES [dbo].[Db_SysDocSet]
@@ -308,12 +351,12 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_Db_SysDocDb_DocCat'
 CREATE INDEX [IX_FK_Db_SysDocDb_DocCat]
-ON [dbo].[Db_DocCatSet]
+ON [dbo].[Db_SysDocCatSet]
     ([Db_SysDocId]);
 GO
 
--- Creating foreign key on [Db_SysDocId] in table 'Db_DocFileSet'
-ALTER TABLE [dbo].[Db_DocFileSet]
+-- Creating foreign key on [Db_SysDocId] in table 'Db_SysDocFileSet'
+ALTER TABLE [dbo].[Db_SysDocFileSet]
 ADD CONSTRAINT [FK_Db_SysDocDb_DocFile]
     FOREIGN KEY ([Db_SysDocId])
     REFERENCES [dbo].[Db_SysDocSet]
@@ -323,7 +366,7 @@ GO
 
 -- Creating non-clustered index for FOREIGN KEY 'FK_Db_SysDocDb_DocFile'
 CREATE INDEX [IX_FK_Db_SysDocDb_DocFile]
-ON [dbo].[Db_DocFileSet]
+ON [dbo].[Db_SysDocFileSet]
     ([Db_SysDocId]);
 GO
 
@@ -372,11 +415,29 @@ ADD CONSTRAINT [FK_Db_CatTree_inherits_Db_SysTree]
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO
 
--- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_DocWebCms'
-ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWebCms]
-ADD CONSTRAINT [FK_Db_DocWebCms_inherits_Db_SysDoc]
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_DocWeb'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_DocWeb]
+ADD CONSTRAINT [FK_Db_DocWeb_inherits_Db_SysDoc]
     FOREIGN KEY ([Id])
     REFERENCES [dbo].[Db_SysDocSet]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WebPage'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WebPage]
+ADD CONSTRAINT [FK_Db_WebPage_inherits_Db_DocWeb]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysDocSet_Db_DocWeb]
+        ([Id])
+    ON DELETE CASCADE ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Id] in table 'Db_SysDocSet_Db_WebRote'
+ALTER TABLE [dbo].[Db_SysDocSet_Db_WebRote]
+ADD CONSTRAINT [FK_Db_WebRote_inherits_Db_DocWeb]
+    FOREIGN KEY ([Id])
+    REFERENCES [dbo].[Db_SysDocSet_Db_DocWeb]
         ([Id])
     ON DELETE CASCADE ON UPDATE NO ACTION;
 GO

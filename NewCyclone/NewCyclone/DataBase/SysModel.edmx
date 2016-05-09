@@ -11,21 +11,23 @@
     <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Store.Db_SysTreeSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysFileSet" EntityType="SysModel.Store.Db_SysFileSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysDocSet" EntityType="SysModel.Store.Db_SysDocSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Db_DocCatSet" EntityType="SysModel.Store.Db_DocCatSet" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Db_DocFileSet" EntityType="SysModel.Store.Db_DocFileSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocCatSet" EntityType="SysModel.Store.Db_SysDocCatSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocFileSet" EntityType="SysModel.Store.Db_SysDocFileSet" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysUserSet_Db_ManagerUser" EntityType="SysModel.Store.Db_SysUserSet_Db_ManagerUser" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysUserSet_Db_MemberUser" EntityType="SysModel.Store.Db_SysUserSet_Db_MemberUser" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysMsgSet_Db_SysExceptionLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysExceptionLog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysMsgSet_Db_SysUserLog" EntityType="SysModel.Store.Db_SysMsgSet_Db_SysUserLog" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="Db_SysTreeSet_Db_CatTree" EntityType="SysModel.Store.Db_SysTreeSet_Db_CatTree" store:Type="Tables" Schema="dbo" />
-    <EntitySet Name="Db_SysDocSet_Db_DocWebCms" EntityType="SysModel.Store.Db_SysDocSet_Db_DocWebCms" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_DocWeb" EntityType="SysModel.Store.Db_SysDocSet_Db_DocWeb" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_WebPage" EntityType="SysModel.Store.Db_SysDocSet_Db_WebPage" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Db_SysDocSet_Db_WebRote" EntityType="SysModel.Store.Db_SysDocSet_Db_WebRote" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="Db_SysDocDb_DocCat" Association="SysModel.Store.Db_SysDocDb_DocCat">
       <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
-      <End Role="Db_DocCat" EntitySet="Db_DocCatSet" />
+      <End Role="Db_DocCat" EntitySet="Db_SysDocCatSet" />
     </AssociationSet>
     <AssociationSet Name="Db_SysDocDb_DocFile" Association="SysModel.Store.Db_SysDocDb_DocFile">
       <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
-      <End Role="Db_DocFile" EntitySet="Db_DocFileSet" />
+      <End Role="Db_DocFile" EntitySet="Db_SysDocFileSet" />
     </AssociationSet>
     <AssociationSet Name="FK_Db_ManagerUser_inherits_Db_SysUser" Association="SysModel.Store.FK_Db_ManagerUser_inherits_Db_SysUser">
       <End Role="Db_SysUser" EntitySet="Db_SysUserSet" />
@@ -47,9 +49,17 @@
       <End Role="Db_SysTree" EntitySet="Db_SysTreeSet" />
       <End Role="Db_CatTree" EntitySet="Db_SysTreeSet_Db_CatTree" />
     </AssociationSet>
-    <AssociationSet Name="FK_Db_DocWebCms_inherits_Db_SysDoc" Association="SysModel.Store.FK_Db_DocWebCms_inherits_Db_SysDoc">
+    <AssociationSet Name="FK_Db_DocWeb_inherits_Db_SysDoc" Association="SysModel.Store.FK_Db_DocWeb_inherits_Db_SysDoc">
       <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
-      <End Role="Db_DocWebCms" EntitySet="Db_SysDocSet_Db_DocWebCms" />
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WebPage_inherits_Db_DocWeb" Association="SysModel.Store.FK_Db_WebPage_inherits_Db_DocWeb">
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+      <End Role="Db_WebPage" EntitySet="Db_SysDocSet_Db_WebPage" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Db_WebRote_inherits_Db_DocWeb" Association="SysModel.Store.FK_Db_WebRote_inherits_Db_DocWeb">
+      <End Role="Db_DocWeb" EntitySet="Db_SysDocSet_Db_DocWeb" />
+      <End Role="Db_WebRote" EntitySet="Db_SysDocSet_Db_WebRote" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Db_SysUserSet">
@@ -103,7 +113,7 @@
     <Property Name="isDeleted" Type="bit" Nullable="false" />
     <Property Name="caption" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
-  <EntityType Name="Db_DocCatSet">
+  <EntityType Name="Db_SysDocCatSet">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -111,7 +121,7 @@
     <Property Name="Db_SysDocId" Type="nvarchar" Nullable="false" MaxLength="50" />
     <Property Name="Db_CatTreeId" Type="nvarchar" Nullable="false" MaxLength="50" />
   </EntityType>
-  <EntityType Name="Db_DocFileSet">
+  <EntityType Name="Db_SysDocFileSet">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
@@ -166,16 +176,35 @@
     <Property Name="sort" Type="int" Nullable="true" />
     <Property Name="Id" Type="varchar" Nullable="false" MaxLength="50" />
   </EntityType>
-  <EntityType Name="Db_SysDocSet_Db_DocWebCms">
+  <EntityType Name="Db_SysDocSet_Db_DocWeb">
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="fun" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="fun" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="describe" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet_Db_WebPage">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="seoTitle" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="seoKeyWords" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="content" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Db_SysDocSet_Db_WebRote">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="imgWidth" Type="int" Nullable="false" />
+    <Property Name="imgHeight" Type="int" Nullable="false" />
+    <Property Name="waitSecond" Type="int" Nullable="false" />
     <Property Name="Id" Type="nvarchar" Nullable="false" MaxLength="50" />
   </EntityType>
   <Association Name="Db_SysDocDb_DocCat">
     <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1" />
-    <End Role="Db_DocCat" Type="SysModel.Store.Db_DocCatSet" Multiplicity="*" />
+    <End Role="Db_DocCat" Type="SysModel.Store.Db_SysDocCatSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Db_SysDoc">
         <PropertyRef Name="Id" />
@@ -187,7 +216,7 @@
   </Association>
   <Association Name="Db_SysDocDb_DocFile">
     <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1" />
-    <End Role="Db_DocFile" Type="SysModel.Store.Db_DocFileSet" Multiplicity="*" />
+    <End Role="Db_DocFile" Type="SysModel.Store.Db_SysDocFileSet" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Db_SysDoc">
         <PropertyRef Name="Id" />
@@ -267,16 +296,44 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK_Db_DocWebCms_inherits_Db_SysDoc">
+  <Association Name="FK_Db_DocWeb_inherits_Db_SysDoc">
     <End Role="Db_SysDoc" Type="SysModel.Store.Db_SysDocSet" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
-    <End Role="Db_DocWebCms" Type="SysModel.Store.Db_SysDocSet_Db_DocWebCms" Multiplicity="0..1" />
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="0..1" />
     <ReferentialConstraint>
       <Principal Role="Db_SysDoc">
         <PropertyRef Name="Id" />
       </Principal>
-      <Dependent Role="Db_DocWebCms">
+      <Dependent Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WebPage_inherits_Db_DocWeb">
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WebPage" Type="SysModel.Store.Db_SysDocSet_Db_WebPage" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WebPage">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Db_WebRote_inherits_Db_DocWeb">
+    <End Role="Db_DocWeb" Type="SysModel.Store.Db_SysDocSet_Db_DocWeb" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Db_WebRote" Type="SysModel.Store.Db_SysDocSet_Db_WebRote" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Db_DocWeb">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Db_WebRote">
         <PropertyRef Name="Id" />
       </Dependent>
     </ReferentialConstraint>
@@ -291,15 +348,15 @@
           <EntitySet Name="Db_SysTreeSet" EntityType="SysModel.Db_SysTree" />
           <EntitySet Name="Db_SysFileSet" EntityType="SysModel.Db_SysFileSet" />
           <EntitySet Name="Db_SysDocSet" EntityType="SysModel.Db_SysDoc" />
-          <EntitySet Name="Db_DocCatSet" EntityType="SysModel.Db_DocCat" />
+          <EntitySet Name="Db_SysDocCatSet" EntityType="SysModel.Db_SysDocCat" />
           <AssociationSet Name="Db_SysDocDb_DocCat" Association="SysModel.Db_SysDocDb_DocCat">
             <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
-            <End Role="Db_DocCat" EntitySet="Db_DocCatSet" />
+            <End Role="Db_DocCat" EntitySet="Db_SysDocCatSet" />
           </AssociationSet>
-          <EntitySet Name="Db_DocFileSet" EntityType="SysModel.Db_DocFile" />
+          <EntitySet Name="Db_SysDocFileSet" EntityType="SysModel.Db_SysDocFile" />
           <AssociationSet Name="Db_SysDocDb_DocFile" Association="SysModel.Db_SysDocDb_DocFile">
             <End Role="Db_SysDoc" EntitySet="Db_SysDocSet" />
-            <End Role="Db_DocFile" EntitySet="Db_DocFileSet" />
+            <End Role="Db_DocFile" EntitySet="Db_SysDocFileSet" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Db_SysUser" Abstract="true">
@@ -384,7 +441,7 @@
           <NavigationProperty Name="Db_DocCat" Relationship="SysModel.Db_SysDocDb_DocCat" FromRole="Db_SysDoc" ToRole="Db_DocCat" />
           <NavigationProperty Name="Db_DocFile" Relationship="SysModel.Db_SysDocDb_DocFile" FromRole="Db_SysDoc" ToRole="Db_DocFile" />
         </EntityType>
-        <EntityType Name="Db_DocCat">
+        <EntityType Name="Db_SysDocCat">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -395,7 +452,7 @@
         </EntityType>
         <Association Name="Db_SysDocDb_DocCat">
           <End Type="SysModel.Db_SysDoc" Role="Db_SysDoc" Multiplicity="1" />
-          <End Type="SysModel.Db_DocCat" Role="Db_DocCat" Multiplicity="*" />
+          <End Type="SysModel.Db_SysDocCat" Role="Db_DocCat" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Db_SysDoc">
               <PropertyRef Name="Id" />
@@ -405,10 +462,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Db_DocWebCms" BaseType="SysModel.Db_SysDoc" >
-          <Property Name="fun" Type="String" Nullable="false" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="Db_DocFile">
+        <EntityType Name="Db_SysDocFile">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -419,7 +473,7 @@
         </EntityType>
         <Association Name="Db_SysDocDb_DocFile">
           <End Type="SysModel.Db_SysDoc" Role="Db_SysDoc" Multiplicity="1" />
-          <End Type="SysModel.Db_DocFile" Role="Db_DocFile" Multiplicity="*" />
+          <End Type="SysModel.Db_SysDocFile" Role="Db_DocFile" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Db_SysDoc">
               <PropertyRef Name="Id" />
@@ -429,6 +483,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Db_DocWeb" BaseType="SysModel.Db_SysDoc" >
+          <Property Name="fun" Type="String" Nullable="false" />
+          <Property Name="describe" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Db_WebPage" BaseType="SysModel.Db_DocWeb" >
+          <Property Name="seoTitle" Type="String" Nullable="false" />
+          <Property Name="seoKeyWords" Type="String" Nullable="false" />
+          <Property Name="content" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Db_WebRote" BaseType="SysModel.Db_DocWeb" >
+          <Property Name="imgWidth" Type="Int32" Nullable="false" />
+          <Property Name="imgHeight" Type="Int32" Nullable="false" />
+          <Property Name="waitSecond" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -532,25 +600,42 @@
           <ScalarProperty Name="caption" ColumnName="caption" />
         </MappingFragment>
       </EntityTypeMapping>
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocWebCms)">
-        <MappingFragment StoreEntitySet="Db_SysDocSet_Db_DocWebCms">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocWeb)">
+        <MappingFragment StoreEntitySet="Db_SysDocSet_Db_DocWeb">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="fun" ColumnName="fun" />
+          <ScalarProperty Name="describe" ColumnName="describe" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_WebPage)">
+        <MappingFragment StoreEntitySet="Db_SysDocSet_Db_WebPage">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="seoTitle" ColumnName="seoTitle" />
+          <ScalarProperty Name="seoKeyWords" ColumnName="seoKeyWords" />
+          <ScalarProperty Name="content" ColumnName="content" />
+        </MappingFragment>
+      </EntityTypeMapping>
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_WebRote)">
+        <MappingFragment StoreEntitySet="Db_SysDocSet_Db_WebRote">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="imgWidth" ColumnName="imgWidth" />
+          <ScalarProperty Name="imgHeight" ColumnName="imgHeight" />
+          <ScalarProperty Name="waitSecond" ColumnName="waitSecond" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Db_DocCatSet">
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocCat)">
-        <MappingFragment StoreEntitySet="Db_DocCatSet">
+    <EntitySetMapping Name="Db_SysDocCatSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysDocCat)">
+        <MappingFragment StoreEntitySet="Db_SysDocCatSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Db_SysDocId" ColumnName="Db_SysDocId" />
           <ScalarProperty Name="Db_CatTreeId" ColumnName="Db_CatTreeId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Db_DocFileSet">
-      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_DocFile)">
-        <MappingFragment StoreEntitySet="Db_DocFileSet">
+    <EntitySetMapping Name="Db_SysDocFileSet">
+      <EntityTypeMapping TypeName="IsTypeOf(SysModel.Db_SysDocFile)">
+        <MappingFragment StoreEntitySet="Db_SysDocFileSet">
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Db_SysDocId" ColumnName="Db_SysDocId" />
           <ScalarProperty Name="Db_SysFileId" ColumnName="Db_SysFileId" />

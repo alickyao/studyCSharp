@@ -25,12 +25,16 @@
         <InheritanceConnector EntityType="SysModel.Db_CatTree" />
         <EntityTypeShape EntityType="SysModel.Db_SysFileSet" Width="1.5" PointX="0.5" PointY="8.375" />
         <EntityTypeShape EntityType="SysModel.Db_SysDoc" Width="1.5" PointX="5.5" PointY="8.375" />
-        <EntityTypeShape EntityType="SysModel.Db_DocCat" Width="1.5" PointX="3.375" PointY="8.375" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDocCat" Width="1.5" PointX="3.375" PointY="8.375" />
         <AssociationConnector Association="SysModel.Db_SysDocDb_DocCat" />
-        <EntityTypeShape EntityType="SysModel.Db_DocWebCms" Width="1.5" PointX="7.75" PointY="8.375" />
-        <InheritanceConnector EntityType="SysModel.Db_DocWebCms" />
-        <EntityTypeShape EntityType="SysModel.Db_DocFile" Width="1.5" PointX="3.375" PointY="10.75" />
+        <EntityTypeShape EntityType="SysModel.Db_SysDocFile" Width="1.5" PointX="3.375" PointY="10.75" />
         <AssociationConnector Association="SysModel.Db_SysDocDb_DocFile" />
+        <EntityTypeShape EntityType="SysModel.Db_DocWeb" Width="1.5" PointX="7.75" PointY="8.375" />
+        <InheritanceConnector EntityType="SysModel.Db_DocWeb" />
+        <EntityTypeShape EntityType="SysModel.Db_WebPage" Width="1.5" PointX="10.125" PointY="8.375" />
+        <InheritanceConnector EntityType="SysModel.Db_WebPage" />
+        <EntityTypeShape EntityType="SysModel.Db_WebRote" Width="1.5" PointX="10.125" PointY="10.625" />
+        <InheritanceConnector EntityType="SysModel.Db_WebRote" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

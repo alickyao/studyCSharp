@@ -12,8 +12,9 @@ namespace NewCyclone.DataBase
     using System;
     using System.Collections.Generic;
     
-    public partial class Db_DocWebCms : Db_SysDoc
+    public partial class Db_DocWeb : Db_SysDoc
     {
         public string fun { get; set; }
+        public string describe { get; set; }
     }
 }
