@@ -47,14 +47,43 @@ namespace threading
             //Console.ReadLine();
 
             //生产者与消费者
-            Cell c = new Cell();
-            GetCell getc = new GetCell(c, 20);
-            SetCell setc = new SetCell(c, 20);
-            Thread g = new Thread(new ThreadStart(getc.doGetCell));
-            Thread s = new Thread(new ThreadStart(setc.doSetCell));
-            s.Start();
-            g.Start();
-            Console.ReadLine();
+            //Cell c = new Cell();
+            //GetCell getc = new GetCell(c, 20);
+            //SetCell setc = new SetCell(c, 20);
+            //Thread g = new Thread(new ThreadStart(getc.doGetCell));
+            //Thread s = new Thread(new ThreadStart(setc.doSetCell));
+            //s.Start();
+            //g.Start();
+            //Console.ReadLine();
+
+            //定时器
+            //TimerCallback callback = new TimerCallback(checkStatus);
+            //TimerTest s = new TimerTest();
+            //Timer tim = new Timer(checkStatus, s, 0, 1000);
+            //s.tim = tim;
+            //while (s.tim != null) { }
+            //Console.WriteLine("Timer example done.");
+            //Console.ReadLine();
+
+            //互斥对象
+            MutexTest.test();
+        }
+
+        /// <summary>
+        /// 定时器执行
+        /// </summary>
+        /// <param name="state"></param>
+        public static void checkStatus(object state) {
+            TimerTest s = (TimerTest)state;
+            s.counter++;
+            if (s.counter < 5)
+            {
+                Console.WriteLine("定时器执行中" + s.counter);
+            }
+            else {
+                s.tim.Dispose();
+                Console.WriteLine("执行完毕");
+            }
         }
     }
 
@@ -188,5 +217,13 @@ namespace threading
                 c.set(i);
             }
         }
+    }
+
+    /// <summary>
+    /// 定时器
+    /// </summary>
+    public class TimerTest {
+        public int counter;
+        public Timer tim;
     }
 }
